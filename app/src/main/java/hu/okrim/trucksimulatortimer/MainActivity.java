@@ -5,19 +5,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
     static boolean timerIsRunning = false;
+    static String estimatedTimeTextBackup = null;
     int remainingSeconds = 0;
+    int timeAddedCounter = 0;
     CountDownTimer inspectionTimer;
     Button buttonStartTimer;
     Button buttonStopTimer;
@@ -28,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
     EditText editTextTotalFerryDistance;
     Thread timer;
     TextView textViewTimer;
+    TextView textViewEstimatedTimeValue;
+    TextView textViewETAValue;
+    @SuppressLint("SimpleDateFormat")
+    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         editTextTotalMinutes = findViewById(R.id.editTextTotalMinutes);
         editTextTotalFerryDistance = findViewById(R.id.editTextTotalFerryDistance);
         textViewTimer = findViewById(R.id.textViewTimer);
+        textViewEstimatedTimeValue = findViewById(R.id.textViewEstimatedTimeValue);
+        textViewETAValue = findViewById(R.id.textViewETAValue);
         editTextTotalFerryDistance.setText("0");
         setListeners();
     }
@@ -82,12 +92,17 @@ public class MainActivity extends AppCompatActivity {
                 editTextTotalHours.setText(null);
                 editTextTotalMinutes.setText(null);
                 editTextTotalFerryDistance.setText("0");
+                textViewEstimatedTimeValue.setText(null);
+                textViewETAValue.setText(null);
             }
         });
         buttonAddOneMinute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                remainingSeconds += 60;
+                timeAddedCounter++;
+                textViewEstimatedTimeValue.setText(String.format("%s (+%s m)",estimatedTimeTextBackup,timeAddedCounter));
+                setETAText();
             }
         });
     }
@@ -95,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
     private void startTimer(int seconds) {
         if(!timerIsRunning){
             startTimerThread(seconds);
+            setEstimatedTimeText();
+            setETAText();
         }
     }
 
@@ -110,6 +127,22 @@ public class MainActivity extends AppCompatActivity {
             realDriveTimeSeconds = inputTotalInMinutes * 3;
         }
         return realDriveTimeSeconds;
+    }
+
+    private void setEstimatedTimeText(){
+        int totalSeconds = calculateDriveTimeInSeconds();
+        int hours = totalSeconds / 3600;
+        totalSeconds %= 3600;
+        int minutes = totalSeconds / 60;
+        textViewEstimatedTimeValue.setText(String.format("~ %s hours %s minutes", hours, minutes));
+        estimatedTimeTextBackup = String.format("~ %s hours %s minutes", hours, minutes);
+    }
+
+    private void setETAText(){
+        long currentTimeMillis = System.currentTimeMillis(); // Get current time in milliseconds
+        long etaMillis = currentTimeMillis + (remainingSeconds * 1000L); // Add seconds in milliseconds
+        String formattedTime = timeFormat.format(new Date(etaMillis));
+        textViewETAValue.setText(formattedTime);
     }
 
     public void startTimerThread(int seconds){
@@ -151,5 +184,6 @@ public class MainActivity extends AppCompatActivity {
         timerIsRunning = false;
         buttonAddOneMinute.setVisibility(View.GONE);
         buttonStopTimer.setVisibility(View.GONE);
+        timeAddedCounter = 0;
     }
 }
