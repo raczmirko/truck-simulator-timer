@@ -6,187 +6,272 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10sp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="9dp"
-        android:layout_marginBottom="9dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        tools:layout_editor_absoluteX="10dp"
+        tools:layout_editor_absoluteY="10dp" >
 
-        <TextView
-            android:id="@+id/textViewTitle"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:text="@string/title"
-            android:textAlignment="center"
-            android:textSize="26sp" />
+            android:layout_margin="10sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="9dp"
+            android:layout_marginBottom="9dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textViewSubTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="cursive"
-            android:text="@string/sub_title"
-            android:textAlignment="center"
-            android:textSize="20sp" />
-
-        <View
-            android:id="@+id/divider1"
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@android:color/holo_orange_dark" />
-
-        <TextView
-            android:id="@+id/textViewTimer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/timer_default"
-            android:textAlignment="center"
-            android:textSize="60sp" />
-
-        <View
-            android:id="@+id/divider2"
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@android:color/holo_orange_dark" />
-
-        <TextView
-            android:id="@+id/textViewTotalDistance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:text="@string/total_distance"
-            android:textSize="16sp" />
-
-        <EditText
-            android:id="@+id/editTextTotalDistance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:autofillHints="distance"
-            android:ems="10"
-            android:hint="@string/total_distance_hint"
-            android:inputType="number"
-            android:minHeight="48dp"
-            tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
-
-        <TextView
-            android:id="@+id/textViewTotaFerrylDistance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:text="@string/total_ferry_distance"
-            android:textSize="16sp" />
-
-        <EditText
-            android:id="@+id/editTextTotalFerryDistance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:autofillHints="distance"
-            android:ems="10"
-            android:hint="@string/total_ferry_distance_hint"
-            android:inputType="number"
-            android:minHeight="48dp"
-            tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
-
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TableRow
+            <TextView
+                android:id="@+id/textViewTitle"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:text="@string/title"
+                android:textAlignment="center"
+                android:textSize="26sp" />
 
-                <TextView
-                    android:id="@+id/textViewEstimatedTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="monospace"
-                    android:text="@string/estimated_time"
-                    android:textAlignment="viewEnd"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/textViewEstimatedTimeValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="viewStart"
-                    android:textSize="16sp" />
-            </TableRow>
-
-            <TableRow
+            <TextView
+                android:id="@+id/textViewSubTitle"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:fontFamily="cursive"
+                android:text="@string/sub_title"
+                android:textAlignment="center"
+                android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/textViewETA"
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@android:color/holo_orange_dark" />
+
+            <TextView
+                android:id="@+id/textViewTotalDistance2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:text="@string/time_remaining"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textViewTimer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/timer_default"
+                android:textAlignment="center"
+                android:textSize="60sp" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@android:color/holo_orange_dark" />
+
+            <TextView
+                android:id="@+id/textViewTotalDistance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:text="@string/total_travel_time"
+                android:textSize="16sp" />
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="monospace"
-                    android:text="@string/eta"
-                    android:textAlignment="viewEnd"
-                    android:textSize="16sp" />
+                    android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/textViewETAValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="viewStart"
-                    android:textSize="16sp" />
-            </TableRow>
-        </TableLayout>
+                    <EditText
+                        android:id="@+id/editTextTotalHours"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:autofillHints="distance"
+                        android:ems="10"
+                        android:hint="@string/total_travel_time_hint_hour"
+                        android:inputType="number"
+                        android:minHeight="48dp"
+                        tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
 
-        <View
-            android:id="@+id/divider3"
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@android:color/holo_orange_dark" />
+                    <TextView
+                        android:id="@+id/textView65"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/hours"
+                        android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/buttonStartTimer"
-            style="@style/Widget.Material3.Button"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:backgroundTint="@android:color/holo_green_dark"
-            android:text="@string/timer_start"
-            android:textSize="20sp"
-            app:cornerRadius="10dp"
-            tools:ignore="VisualLintButtonSize" />
+                </TableRow>
 
-        <Button
-            android:id="@+id/buttonStopTimer"
-            style="@style/Widget.Material3.Button"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:backgroundTint="@android:color/holo_red_light"
-            android:text="@string/timer_stop"
-            android:textSize="20sp"
-            app:cornerRadius="10dp"
-            tools:ignore="VisualLintButtonSize" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/buttonReset"
-            style="@style/Widget.Material3.Button"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:backgroundTint="@android:color/holo_orange_dark"
-            android:text="@string/reset"
-            android:textSize="20sp"
-            app:cornerRadius="10dp"
-            tools:ignore="TextContrastCheck,VisualLintButtonSize" />
+                    <EditText
+                        android:id="@+id/editTextTotalMinutes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:autofillHints="distance"
+                        android:ems="10"
+                        android:hint="@string/total_travel_time_hint_minute"
+                        android:inputType="number"
+                        android:minHeight="48dp"
+                        tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
 
-    </LinearLayout>
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/minutes"
+                        android:textSize="16sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textViewTotaFerrylDistance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:text="@string/total_ferry_distance"
+                        android:textSize="16sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <EditText
+                        android:id="@+id/editTextTotalFerryDistance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:autofillHints="distance"
+                        android:ems="10"
+                        android:hint="@string/total_ferry_distance_hint"
+                        android:inputType="number"
+                        android:minHeight="48dp"
+                        tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/kilometres"
+                        android:textSize="16sp" />
+                </TableRow>
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@android:color/holo_orange_dark" />
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textViewEstimatedTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:text="@string/estimated_time"
+                        android:textAlignment="viewEnd"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/textViewEstimatedTimeValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewStart"
+                        android:textSize="16sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textViewETA"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:text="@string/eta"
+                        android:textAlignment="viewEnd"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/textViewETAValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewStart"
+                        android:textSize="16sp" />
+                </TableRow>
+            </TableLayout>
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@android:color/holo_orange_dark" />
+
+            <Button
+                android:id="@+id/buttonStartTimer"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:backgroundTint="@android:color/holo_green_dark"
+                android:text="@string/timer_start"
+                android:textSize="20sp"
+                app:cornerRadius="10dp"
+                tools:ignore="VisualLintButtonSize" />
+
+            <Button
+                android:id="@+id/buttonAddOneMin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_one_min"
+                android:visibility="gone"
+                app:cornerRadius="5dp" />
+
+            <Button
+                android:id="@+id/buttonStopTimer"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:backgroundTint="@android:color/holo_red_light"
+                android:text="@string/timer_stop"
+                android:textSize="20sp"
+                android:visibility="gone"
+                app:cornerRadius="10dp"
+                tools:ignore="VisualLintButtonSize" />
+
+            <Button
+                android:id="@+id/buttonReset"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:backgroundTint="@android:color/holo_orange_dark"
+                android:text="@string/reset"
+                android:textSize="20sp"
+                app:cornerRadius="10dp"
+                tools:ignore="TextContrastCheck,VisualLintButtonSize" />
+
+        </LinearLayout>
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
