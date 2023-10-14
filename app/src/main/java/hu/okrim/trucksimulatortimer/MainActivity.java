@@ -2,15 +2,16 @@ package hu.okrim.trucksimulatortimer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,7 +22,9 @@ public class MainActivity extends AppCompatActivity {
     Button buttonStartTimer;
     Button buttonStopTimer;
     Button buttonReset;
-    EditText editTextTotalDistance;
+    Button buttonAddOneMinute;
+    EditText editTextTotalHours;
+    EditText editTextTotalMinutes;
     EditText editTextTotalFerryDistance;
     Thread timer;
     TextView textViewTimer;
@@ -36,9 +39,12 @@ public class MainActivity extends AppCompatActivity {
         buttonStartTimer = findViewById(R.id.buttonStartTimer);
         buttonStopTimer = findViewById(R.id.buttonStopTimer);
         buttonReset = findViewById(R.id.buttonReset);
-        editTextTotalDistance = findViewById(R.id.editTextTotalDistance);
+        buttonAddOneMinute = findViewById(R.id.buttonAddOneMin);
+        editTextTotalHours = findViewById(R.id.editTextTotalHours);
+        editTextTotalMinutes = findViewById(R.id.editTextTotalMinutes);
         editTextTotalFerryDistance = findViewById(R.id.editTextTotalFerryDistance);
         textViewTimer = findViewById(R.id.textViewTimer);
+        editTextTotalFerryDistance.setText("0");
         setListeners();
     }
 
@@ -46,26 +52,39 @@ public class MainActivity extends AppCompatActivity {
         buttonStartTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(editTextTotalDistance.getText().length() == 0 ||
+                if(editTextTotalHours.getText().length() == 0 ||
+                   editTextTotalMinutes.getText().length() == 0 ||
                    editTextTotalFerryDistance.getText().length() == 0){
                     Toast.makeText(
                             getApplicationContext(),
-                            "Fill in the distances before starting the timer!",
+                            "Fill in the inputs before starting the timer!",
                             Toast.LENGTH_LONG
                     ).show();
                 }
                 else{
-                    startTimer(calculateDriveTime());
+                    startTimer(calculateDriveTimeInSeconds());
+                    buttonAddOneMinute.setVisibility(View.VISIBLE);
+                    buttonStopTimer.setVisibility(View.VISIBLE);
                 }
             }
         });
         buttonStopTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                endTimer();
             }
         });
         buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                endTimer();
+                textViewTimer.setText(R.string.timer_default);
+                editTextTotalHours.setText(null);
+                editTextTotalMinutes.setText(null);
+                editTextTotalFerryDistance.setText("0");
+            }
+        });
+        buttonAddOneMinute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -79,8 +98,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private int calculateDriveTime() {
-        return Integer.parseInt(editTextTotalDistance.getText().toString());
+    private int calculateDriveTimeInSeconds() {
+        int realDriveTimeSeconds = 0;
+        if(editTextTotalFerryDistance.getText().toString().equals("0")){
+            int inputMinutes = Integer.parseInt(editTextTotalMinutes.getText().toString());
+            int inputHours = Integer.parseInt(editTextTotalHours.getText().toString());
+            int inputTotalInMinutes = inputHours * 60 + inputMinutes;
+            // We first convert the in-game time into a sum of seconds
+            // Then we multiply by 3 because 1 in game minute is 3 seconds IRL
+            // And our method needs to return seconds
+            realDriveTimeSeconds = inputTotalInMinutes * 3;
+        }
+        return realDriveTimeSeconds;
     }
 
     public void startTimerThread(int seconds){
@@ -104,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                         //Since the time format is 00:00:00 (it's not really useful to track more...)
                         //An int can store values up to 2 billion so maximum 356 million fits
                         remainingSeconds--;
-                        if(remainingSeconds == 0){timerIsRunning = false;}
+                        if(remainingSeconds == 0){endTimer();}
                         runOnUiThread(() -> {
                             // Updating timer text on UI thread
                             textViewTimer.setText(TimeFormatController.createTimeText(remainingSeconds));
@@ -116,5 +145,11 @@ public class MainActivity extends AppCompatActivity {
         if(!timer.isAlive()){
             timer.start();
         }
+    }
+
+    public void endTimer(){
+        timerIsRunning = false;
+        buttonAddOneMinute.setVisibility(View.GONE);
+        buttonStopTimer.setVisibility(View.GONE);
     }
 }
