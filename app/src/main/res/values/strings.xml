@@ -10,10 +10,10 @@
     <string name="hours">h</string>
     <string name="minutes">min</string>
     <string name="kilometres">km</string>
-    <string name="add_one_min">Add 1 minute to timer!</string>
-    <string name="add_ferry_time">Subtract ferry time!</string>
+    <string name="add_one_min">+1 MIN</string>
+    <string name="add_ferry_time">Add ferry ride</string>
     <string name="calculate">Calculate</string>
-    <string name="subtract_ferry_time">Subtract ferry time</string>
+    <string name="subtract_ferry_time">Another ferry ride</string>
     <string name="ferry_distance">Ferry distance (km):</string>
     <string name="ferry_time">Ferry time (h, min):</string>
     <string name="ferry_hour">Type ferry hours</string>
@@ -31,4 +31,7 @@
     <string name="cancel">Cancel</string>
     <string name="pause">Pause timer</string>
     <string name="resume">Resume timer</string>
+    <string name="distance_load_pickup">Distance until load pickup (h, min):</string>
+    <string name="load_pickup_hour">Hours</string>
+    <string name="load_pickup_minute">Minutes</string>
 </resources>
