@@ -11,7 +11,13 @@
     <string name="minutes">min</string>
     <string name="kilometres">km</string>
     <string name="add_one_min">Add 1 minute to timer!</string>
-    <string name="total_ferry_distance">Total ferry distance:</string>
+    <string name="add_ferry_time">Subtract ferry time!</string>
+    <string name="calculate">Calculate</string>
+    <string name="subtract_ferry_time">Subtract ferry time</string>
+    <string name="ferry_distance">Ferry distance (km):</string>
+    <string name="ferry_time">Ferry time (h, min):</string>
+    <string name="ferry_hour">Type ferry hours</string>
+    <string name="ferry_minute">Type ferry minutes</string>
     <string name="total_distance_hint">Kilometres on land</string>
     <string name="total_ferry_distance_hint">Kilometres by ferry</string>
     <string name="estimated_time">Estimated time:</string>
@@ -21,4 +27,6 @@
     <string name="timer_start">Start timer</string>
     <string name="timer_stop">Stop timer</string>
     <string name="reset">Reset</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 </resources>
