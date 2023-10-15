@@ -285,9 +285,11 @@
                         android:layout_height="50dp"
                         android:layout_weight="1"
                         android:backgroundTint="#E91E63"
+                        android:breakStrategy="simple"
+                        android:padding="5dp"
                         android:text="@string/calculate"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
+                        android:textSize="14sp"
                         app:cornerRadius="10dp"
                         tools:ignore="VisualLintButtonSize" />
 
@@ -299,10 +301,12 @@
                         android:layout_marginStart="10dp"
                         android:layout_weight="1"
                         android:backgroundTint="#9C27B0"
+                        android:breakStrategy="simple"
                         android:enabled="false"
+                        android:padding="5dp"
                         android:text="@string/subtract_ferry_time"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
+                        android:textSize="14sp"
                         app:cornerRadius="10dp"
                         tools:ignore="VisualLintButtonSize" />
                 </TableRow>

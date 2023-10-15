@@ -2,9 +2,11 @@ package hu.okrim.trucksimulatortimer;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -21,10 +23,9 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
-
+    TimerButtonState timerButtonState = TimerButtonState.STOPPED;
     private Handler handler = new Handler(Looper.getMainLooper());
     boolean timerIsRunning = false;
-    boolean subtractFerryButtonEnabled = false;
     String estimatedTimeTextBackup = null;
     final double ferryOneKmInGameMinutesShortDistance = 1.71;
     final double ferryOneKmInGameMinutesLongDistance = 1.25;
@@ -37,9 +38,9 @@ public class MainActivity extends AppCompatActivity {
     Button buttonAddOneMinute;
     Button buttonAddFerryTime;
     Button buttonCalculate;
-    Button dialogOk;
-    Button dialogCancel;
     Button buttonSubtractFerryTime;
+    CardView cardViewTime;
+    CardView cardViewFerry;
     EditText editTextTotalHours;
     EditText editTextTotalMinutes;
     EditText editTextTotalFerryDistance;
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         buttonAddFerryTime = findViewById(R.id.buttonAddFerryTime);
         buttonCalculate  = findViewById(R.id.buttonCalculate);
         buttonSubtractFerryTime = findViewById(R.id.buttonSubtractFerryTime);
+        cardViewTime = findViewById(R.id.cardTotalTravelTime);
+        cardViewFerry = findViewById(R.id.cardTotalFerryDistance);
         editTextTotalHours = findViewById(R.id.editTextTotalHours);
         editTextTotalMinutes = findViewById(R.id.editTextTotalMinutes);
         editTextTotalFerryDistance = findViewById(R.id.editTextTFerryHour);
@@ -80,26 +83,50 @@ public class MainActivity extends AppCompatActivity {
         buttonStartTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(editTextTotalHours.getText().length() == 0 ||
-                   editTextTotalMinutes.getText().length() == 0 ||
-                   editTextTotalFerryDistance.getText().length() == 0){
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "Fill in the inputs before starting the timer!",
-                            Toast.LENGTH_LONG
-                    ).show();
-                }
-                else{
-                    if(remainingSeconds == 0){
-                        startTimer(calculateDriveTimeInSeconds());
+                if(timerButtonState == TimerButtonState.STOPPED){
+                    if(editTextTotalHours.getText().length() == 0 ||
+                            editTextTotalMinutes.getText().length() == 0 ||
+                            editTextTotalFerryDistance.getText().length() == 0){
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Fill in the inputs before starting the timer!",
+                                Toast.LENGTH_LONG
+                        ).show();
                     }
                     else{
-                        startTimer(remainingSeconds);
+                        if(remainingSeconds == 0){
+                            startTimer(calculateDriveTimeInSeconds());
+                        }
+                        else{
+                            startTimer(remainingSeconds);
+                        }
+                        buttonAddOneMinute.setVisibility(View.VISIBLE);
+                        buttonStopTimer.setVisibility(View.VISIBLE);
+                        buttonAddFerryTime.setVisibility(View.VISIBLE);
+                        editTextTotalHours.setEnabled(false);
+                        editTextTotalMinutes.setEnabled(false);
+                        editTextTotalFerryDistance.setEnabled(false);
+                        buttonSubtractFerryTime.setEnabled(false);
+                        buttonCalculate.setEnabled(false);
+                        buttonCalculate.setVisibility(View.GONE);
+                        buttonSubtractFerryTime.setVisibility(View.GONE);
+                        cardViewTime.setVisibility(View.GONE);
+                        cardViewFerry.setVisibility(View.GONE);
+                        //Changing button to pause button
+                        buttonStartTimer.setText(R.string.pause);
+
                     }
-                    buttonAddOneMinute.setVisibility(View.VISIBLE);
-                    buttonStopTimer.setVisibility(View.VISIBLE);
-                    buttonAddFerryTime.setVisibility(View.VISIBLE);
                 }
+                else if(timerButtonState == TimerButtonState.RUNNING){
+                    timerIsRunning = false;
+                    setButtonInPausedTimerState();
+                }
+                else {
+                    setETAText();
+                    startTimer(remainingSeconds);
+                    setButtonInRunningTimerState();
+                }
+
             }
         });
         buttonStopTimer.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                     ).show();
                 }
                 else {
-                    subtractFerryButtonEnabled = true;
+                    buttonSubtractFerryTime.setEnabled(true);
                     remainingSeconds = calculateDriveTimeInSeconds();
                     int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
                     subTractFerryTimeFromRemainingSecondsCalculatedFromKilometres(ferryDistance);
@@ -201,7 +228,17 @@ public class MainActivity extends AppCompatActivity {
         editTextTotalFerryDistance.setText("0");
         textViewEstimatedTimeValue.setText(null);
         textViewETAValue.setText(null);
-        subtractFerryButtonEnabled = false;
+        editTextTotalHours.setEnabled(true);
+        editTextTotalMinutes.setEnabled(true);
+        editTextTotalFerryDistance.setEnabled(true);
+        buttonSubtractFerryTime.setEnabled(false);
+        buttonCalculate.setEnabled(true);
+        cardViewTime.setVisibility(View.VISIBLE);
+        cardViewFerry.setVisibility(View.VISIBLE);
+        buttonCalculate.setEnabled(true);
+        buttonSubtractFerryTime.setEnabled(true);
+        buttonCalculate.setVisibility(View.VISIBLE);
+        buttonSubtractFerryTime.setVisibility(View.VISIBLE);
     }
 
     private void subTractFerryTimeFromRemainingSecondsCalculatedFromKilometres(int ferryKilometres){
@@ -214,10 +251,29 @@ public class MainActivity extends AppCompatActivity {
         }
         // 1 in-game minute = 3 seconds IRL
         int distanceInRealSeconds = (int)(distanceInGameMinutes * 3);
-        remainingSeconds -= distanceInRealSeconds;
+
+        if(remainingSeconds - distanceInRealSeconds > 0){
+            remainingSeconds -= distanceInRealSeconds;
+        }
+        else{
+            Toast.makeText(
+                    getApplicationContext(),
+                    "This subtraction would result in a negative timer value!",
+                    Toast.LENGTH_LONG
+            ).show();
+        }
     }
     private void subTractFerryTimeFromRemainingSecondsCalculatedFromFerryTime(int ferryMinutes){
-        remainingSeconds -= ferryMinutes * 3;
+        if(remainingSeconds - ferryMinutes * 3 > 0){
+            remainingSeconds -= ferryMinutes * 3;
+        }
+        else{
+            Toast.makeText(
+                    getApplicationContext(),
+                    "This subtraction would result in a negative timer value!",
+                    Toast.LENGTH_LONG
+            ).show();
+        }
     }
 
     private void startTimer(int seconds) {
@@ -227,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
             startTimerThread(seconds);
             setEstimatedTimeText(seconds);
             setETAText();
+            setButtonInRunningTimerState();
         }
     }
 
@@ -296,14 +353,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void setButtonInStoppedTimerState(){
+        buttonStartTimer.setText(R.string.timer_start);
+        buttonStartTimer.setBackgroundColor(Color.parseColor("#ff669900"));
+        timerButtonState = TimerButtonState.STOPPED;
+    }
+
+    public void setButtonInRunningTimerState(){
+        buttonStartTimer.setText(R.string.pause);
+        buttonStartTimer.setBackgroundColor(Color.parseColor("#ffffbb33"));
+        timerButtonState = TimerButtonState.RUNNING;
+    }
+
+    public void setButtonInPausedTimerState(){
+        buttonStartTimer.setText(R.string.resume);
+        buttonStartTimer.setBackgroundColor(Color.parseColor("#ffff8800"));
+        timerButtonState = TimerButtonState.PAUSED;
+    }
+
     public void endTimer(){
         timerIsRunning = false;
         buttonAddOneMinute.setVisibility(View.GONE);
         buttonStopTimer.setVisibility(View.GONE);
         buttonAddFerryTime.setVisibility(View.GONE);
-        buttonCalculate.setEnabled(true);
-        buttonSubtractFerryTime.setEnabled(true);
         timeAddedCounter = 0;
+        setButtonInStoppedTimerState();
     }
 
     public void resetUIOnCountdownOver(){

@@ -29,4 +29,6 @@
     <string name="reset">Reset</string>
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
+    <string name="pause">Pause timer</string>
+    <string name="resume">Resume timer</string>
 </resources>

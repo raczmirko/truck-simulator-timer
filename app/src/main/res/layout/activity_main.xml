@@ -142,7 +142,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="monospace"
-                        android:text="@string/total_ferry_distance"
+                        android:text="@string/ferry_distance"
                         android:textSize="16sp" />
                 </TableRow>
 
@@ -151,7 +151,7 @@
                     android:layout_height="match_parent">
 
                     <EditText
-                        android:id="@+id/editTextTotalFerryDistance"
+                        android:id="@+id/editTextTFerryHour"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
