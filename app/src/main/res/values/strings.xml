@@ -4,6 +4,7 @@
     <string name="sub_title">by Okrim</string>
     <string name="total_distance">Total distance:</string>
     <string name="total_travel_time">Total travel time:</string>
+    <string name="total_travel_time_card">Total travel time (h, min):</string>
     <string name="total_travel_time_hint_hour">Hours</string>
     <string name="total_travel_time_hint_minute">Minutes</string>
     <string name="hours">h</string>
