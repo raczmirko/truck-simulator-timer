@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
         buttonSubtractFerryTime.setEnabled(true);
         buttonCalculate.setVisibility(View.VISIBLE);
         buttonSubtractFerryTime.setVisibility(View.VISIBLE);
+        textViewTimer.setTextColor(Color.WHITE);
     }
 
     private void subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(int ferryKilometres){
@@ -309,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
                         remainingSeconds--;
                         runOnUiThread(() -> {
                             // Updating timer text on UI thread
+                            if(remainingSeconds < 0){textViewTimer.setTextColor(Color.RED);}
                             textViewTimer.setText(TimeFormatController.createTimeText(remainingSeconds));
                         });
                     }
