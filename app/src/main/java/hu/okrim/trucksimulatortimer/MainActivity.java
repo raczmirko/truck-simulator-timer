@@ -11,8 +11,10 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_rework);
         initComponents();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void initComponents() {
@@ -71,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         cardViewFerry = findViewById(R.id.cardTotalFerryDistance);
         editTextTotalHours = findViewById(R.id.editTextTotalHours);
         editTextTotalMinutes = findViewById(R.id.editTextTotalMinutes);
-        editTextTotalFerryDistance = findViewById(R.id.editTextTFerryHour);
+        editTextTotalFerryDistance = findViewById(R.id.editTextTPickupHour);
         textViewTimer = findViewById(R.id.textViewTimer);
         textViewEstimatedTimeValue = findViewById(R.id.textViewEstimatedTimeValue);
         textViewETAValue = findViewById(R.id.textViewETAValue);
@@ -94,12 +97,6 @@ public class MainActivity extends AppCompatActivity {
                         ).show();
                     }
                     else{
-                        if(remainingSeconds == 0){
-                            startTimer(calculateDriveTimeInSeconds());
-                        }
-                        else{
-                            startTimer(remainingSeconds);
-                        }
                         buttonAddOneMinute.setVisibility(View.VISIBLE);
                         buttonStopTimer.setVisibility(View.VISIBLE);
                         buttonAddFerryTime.setVisibility(View.VISIBLE);
@@ -114,7 +111,8 @@ public class MainActivity extends AppCompatActivity {
                         cardViewFerry.setVisibility(View.GONE);
                         //Changing button to pause button
                         buttonStartTimer.setText(R.string.pause);
-
+                        remainingSeconds = calculateDriveTimeInSeconds();
+                        showDistanceToStartingCompanyDialog();
                     }
                 }
                 else if(timerButtonState == TimerButtonState.RUNNING){
@@ -154,38 +152,7 @@ public class MainActivity extends AppCompatActivity {
         buttonAddFerryTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create the dialog
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                LayoutInflater inflater = getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.dialog_layout, null);
-                dialogBuilder.setView(dialogView);
-
-                // References to the EditText views in the dialog
-                final EditText editTextHour = dialogView.findViewById(R.id.editTextTFerryHour);
-                final EditText editTextMinute = dialogView.findViewById(R.id.editTextFerryMinute);
-
-                // Define OK button behavior
-                dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String textHour = editTextHour.getText().toString();
-                        String textMinute = editTextMinute.getText().toString();
-                        int ferryTotalMinutes = Integer.parseInt(textHour) * 60 + Integer.parseInt(textMinute);
-                        subTractFerryTimeFromRemainingSecondsCalculatedFromFerryTime(ferryTotalMinutes);
-                    }
-                });
-
-                // Define Cancel button behavior
-                dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Handle the Cancel button click (if needed)
-                        dialog.dismiss();
-                    }
-                });
-
-                AlertDialog dialog = dialogBuilder.create();
-                dialog.show();
+                showFerryPopupDialog();
             }
         });
         buttonCalculate.setOnClickListener(new View.OnClickListener() {
@@ -204,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                     buttonSubtractFerryTime.setEnabled(true);
                     remainingSeconds = calculateDriveTimeInSeconds();
                     int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
-                    subTractFerryTimeFromRemainingSecondsCalculatedFromKilometres(ferryDistance);
+                    subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(ferryDistance);
                     setEstimatedTimeText(remainingSeconds);
                     setETAText();
                 }
@@ -214,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
-                subTractFerryTimeFromRemainingSecondsCalculatedFromKilometres(ferryDistance);
+                subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(ferryDistance);
                 setEstimatedTimeText(remainingSeconds);
                 setETAText();
             }
@@ -241,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         buttonSubtractFerryTime.setVisibility(View.VISIBLE);
     }
 
-    private void subTractFerryTimeFromRemainingSecondsCalculatedFromKilometres(int ferryKilometres){
+    private void subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(int ferryKilometres){
         double distanceInGameMinutes = 0;
         if(ferryKilometres < 700){
             distanceInGameMinutes = ferryKilometres * ferryOneKmInGameMinutesShortDistance;
@@ -298,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
         realDriveTimeSeconds = inputTotalInMinutes * 3;
         if(!editTextTotalFerryDistance.getText().toString().equals("0")){
             int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
-            subTractFerryTimeFromRemainingSecondsCalculatedFromKilometres(ferryDistance);
+            subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(ferryDistance);
         }
         return realDriveTimeSeconds;
     }
@@ -306,7 +273,8 @@ public class MainActivity extends AppCompatActivity {
     private void setEstimatedTimeText(int totalSeconds){
         int hours = totalSeconds / 3600;
         totalSeconds %= 3600;
-        int minutes = totalSeconds / 60;
+        Log.d("totalSeconds", String.valueOf(totalSeconds));
+        int minutes = (int)Math.ceil(totalSeconds / 60.0);
         textViewEstimatedTimeValue.setText(String.format("~ %s hours %s minutes", hours, minutes));
         estimatedTimeTextBackup = String.format("~ %s hours %s minutes", hours, minutes);
     }
@@ -339,7 +307,6 @@ public class MainActivity extends AppCompatActivity {
                         //Since the time format is 00:00:00 (it's not really useful to track more...)
                         //An int can store values up to 2 billion so maximum 356 million fits
                         remainingSeconds--;
-                        if(remainingSeconds == 0){resetUIOnCountdownOver();}
                         runOnUiThread(() -> {
                             // Updating timer text on UI thread
                             textViewTimer.setText(TimeFormatController.createTimeText(remainingSeconds));
@@ -379,14 +346,73 @@ public class MainActivity extends AppCompatActivity {
         timeAddedCounter = 0;
         setButtonInStoppedTimerState();
     }
+    public void showFerryPopupDialog(){
+        // Create the dialog
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.ferry_dialog_layout, null);
+        dialogBuilder.setView(dialogView);
 
-    public void resetUIOnCountdownOver(){
-        handler.post(new Runnable() {
+        // References to the EditText views in the dialog
+        final EditText editTextHour = dialogView.findViewById(R.id.editTextTPickupHour);
+        final EditText editTextMinute = dialogView.findViewById(R.id.editTextPickupMinute);
+
+        // Define OK button behavior
+        dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
-            public void run() {
-                endTimer();
-                resetUI();
+            public void onClick(DialogInterface dialog, int which) {
+                String textHour = editTextHour.getText().toString();
+                String textMinute = editTextMinute.getText().toString();
+                int ferryTotalMinutes = Integer.parseInt(textHour) * 60 + Integer.parseInt(textMinute);
+                subTractFerryTimeFromRemainingSecondsCalculatedFromFerryTime(ferryTotalMinutes);
             }
         });
+
+        // Define Cancel button behavior
+        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Handle the Cancel button click (if needed)
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = dialogBuilder.create();
+        dialog.show();
+    }
+    public void showDistanceToStartingCompanyDialog(){
+        // Create the dialog
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.load_pickup_dialog_layout, null);
+        dialogBuilder.setView(dialogView);
+
+        // References to the EditText views in the dialog
+        final EditText editTextHour = dialogView.findViewById(R.id.editTextTPickupHour);
+        final EditText editTextMinute = dialogView.findViewById(R.id.editTextPickupMinute);
+
+        // Define OK button behavior
+        dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String textHour = editTextHour.getText().toString();
+                String textMinute = editTextMinute.getText().toString();
+                int pickupInMinutes = Integer.parseInt(textHour) * 60 + Integer.parseInt(textMinute);
+                remainingSeconds += pickupInMinutes * 3;
+                startTimer(remainingSeconds);
+            }
+        });
+
+        // Define Cancel button behavior
+        dialogBuilder.setNegativeButton("NONE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Handle the Cancel button click (if needed)
+                dialog.dismiss();
+                startTimer(calculateDriveTimeInSeconds());
+            }
+        });
+        AlertDialog dialog = dialogBuilder.create();
+        dialog.show();
     }
 }
