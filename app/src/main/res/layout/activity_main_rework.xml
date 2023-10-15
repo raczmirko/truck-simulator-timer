@@ -9,8 +9,10 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="10dp"
-        tools:layout_editor_absoluteY="10dp" >
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -18,8 +20,8 @@
             android:layout_margin="10sp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="9dp"
-            android:layout_marginBottom="9dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
             <TextView
@@ -95,6 +97,7 @@
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="16sp"
+                        android:textStyle="bold"
                         tools:ignore="TextContrastCheck" />
 
                     <EditText
@@ -133,6 +136,7 @@
                 android:id="@+id/cardTotalFerryDistance"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="visible"
                 app:cardBackgroundColor="#03A9F4"
                 app:cardCornerRadius="10dp">
 
@@ -147,13 +151,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="monospace"
-                        android:text="@string/total_ferry_distance"
+                        android:text="@string/ferry_distance"
                         android:textAlignment="center"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/editTextTotalFerryDistance"
+                        android:id="@+id/editTextTFerryHour"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
@@ -176,7 +181,8 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    tools:ignore="UselessParent">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardViewETA"
@@ -202,7 +208,8 @@
                                 android:text="@string/eta"
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
-                                android:textSize="16sp" />
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/textViewETAValue"
@@ -239,6 +246,7 @@
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
+                                android:textStyle="bold"
                                 tools:ignore="TextContrastCheck" />
 
                             <TextView
@@ -261,6 +269,45 @@
                 android:layout_marginBottom="5dp"
                 android:background="@android:color/holo_orange_dark" />
 
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:ignore="UselessParent">
+
+                    <Button
+                        android:id="@+id/buttonCalculate"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#E91E63"
+                        android:text="@string/calculate"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        app:cornerRadius="10dp"
+                        tools:ignore="VisualLintButtonSize" />
+
+                    <Button
+                        android:id="@+id/buttonSubtractFerryTime"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#9C27B0"
+                        android:enabled="false"
+                        android:text="@string/subtract_ferry_time"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        app:cornerRadius="10dp"
+                        tools:ignore="VisualLintButtonSize" />
+                </TableRow>
+            </TableLayout>
+
             <Button
                 android:id="@+id/buttonStartTimer"
                 style="@style/Widget.Material3.Button"
@@ -281,6 +328,14 @@
                 app:cornerRadius="5dp" />
 
             <Button
+                android:id="@+id/buttonAddFerryTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_ferry_time"
+                android:visibility="gone"
+                app:cornerRadius="10dp" />
+
+            <Button
                 android:id="@+id/buttonStopTimer"
                 style="@style/Widget.Material3.Button"
                 android:layout_width="match_parent"
@@ -297,6 +352,7 @@
                 style="@style/Widget.Material3.Button"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
+                android:layout_marginBottom="30dp"
                 android:backgroundTint="@android:color/holo_orange_dark"
                 android:text="@string/reset"
                 android:textSize="20sp"
