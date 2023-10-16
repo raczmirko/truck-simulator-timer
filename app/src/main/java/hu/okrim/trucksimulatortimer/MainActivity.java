@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     boolean timerIsRunning = false;
     String estimatedTimeTextBackup = null;
     final double ferryOneKmInGameMinutesShortDistance = 1.71;
-    final double ferryOneKmInGameMinutesLongDistance = 1.25;
+    final double ferryOneKmInGameMinutesLongDistance = 1.248;
     int remainingSeconds = 0;
     int timeAddedCounter = 0;
     CountDownTimer inspectionTimer;
@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
                         //Changing button to pause button
                         buttonStartTimer.setText(R.string.pause);
                         remainingSeconds = calculateDriveTimeInSeconds();
+                        Log.d("remainingSeconds", String.valueOf(remainingSeconds));
+                        //Initial start of timer
                         showDistanceToStartingCompanyDialog();
                     }
                 }
@@ -120,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
                     setButtonInPausedTimerState();
                 }
                 else {
-                    setETAText();
                     startTimer(remainingSeconds);
                     setButtonInRunningTimerState();
                 }
@@ -171,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                     buttonSubtractFerryTime.setEnabled(true);
                     remainingSeconds = calculateDriveTimeInSeconds();
                     int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
-                    subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(ferryDistance);
+                    remainingSeconds = subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(remainingSeconds,ferryDistance);
                     setEstimatedTimeText(remainingSeconds);
                     setETAText();
                 }
@@ -181,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
-                subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(ferryDistance);
+                remainingSeconds = subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(remainingSeconds,ferryDistance);
                 setEstimatedTimeText(remainingSeconds);
                 setETAText();
             }
@@ -207,9 +208,10 @@ public class MainActivity extends AppCompatActivity {
         buttonCalculate.setVisibility(View.VISIBLE);
         buttonSubtractFerryTime.setVisibility(View.VISIBLE);
         textViewTimer.setTextColor(Color.WHITE);
+        buttonStartTimer.setVisibility(View.VISIBLE);
     }
 
-    private void subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(int ferryKilometres){
+    private int subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(int subtractFrom, int ferryKilometres){
         double distanceInGameMinutes = 0;
         if(ferryKilometres < 700){
             distanceInGameMinutes = ferryKilometres * ferryOneKmInGameMinutesShortDistance;
@@ -220,8 +222,8 @@ public class MainActivity extends AppCompatActivity {
         // 1 in-game minute = 3 seconds IRL
         int distanceInRealSeconds = (int)(distanceInGameMinutes * 3);
 
-        if(remainingSeconds - distanceInRealSeconds > 0){
-            remainingSeconds -= distanceInRealSeconds;
+        if(subtractFrom - distanceInRealSeconds > 0){
+            subtractFrom -= distanceInRealSeconds;
         }
         else{
             Toast.makeText(
@@ -230,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG
             ).show();
         }
+        return subtractFrom;
     }
     private void subTractFerryTimeFromRemainingSecondsCalculatedFromFerryTime(int ferryMinutes){
         if(remainingSeconds - ferryMinutes * 3 > 0){
@@ -264,9 +267,11 @@ public class MainActivity extends AppCompatActivity {
         // Then we multiply by 3 because 1 in game minute is 3 seconds IRL
         // And our method needs to return seconds
         realDriveTimeSeconds = inputTotalInMinutes * 3;
-        if(!editTextTotalFerryDistance.getText().toString().equals("0")){
+        if(!editTextTotalFerryDistance.getText().toString().equals("0") &&
+            editTextTotalFerryDistance.getText() != null){
             int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
-            subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(ferryDistance);
+            realDriveTimeSeconds = subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(realDriveTimeSeconds,ferryDistance);
+            Log.d("ferrySubtractionCalled", "true");
         }
         return realDriveTimeSeconds;
     }
@@ -274,7 +279,6 @@ public class MainActivity extends AppCompatActivity {
     private void setEstimatedTimeText(int totalSeconds){
         int hours = totalSeconds / 3600;
         totalSeconds %= 3600;
-        Log.d("totalSeconds", String.valueOf(totalSeconds));
         int minutes = (int)Math.ceil(totalSeconds / 60.0);
         textViewEstimatedTimeValue.setText(String.format("~ %s hours %s minutes", hours, minutes));
         estimatedTimeTextBackup = String.format("~ %s hours %s minutes", hours, minutes);
@@ -345,6 +349,7 @@ public class MainActivity extends AppCompatActivity {
         buttonAddOneMinute.setVisibility(View.GONE);
         buttonStopTimer.setVisibility(View.GONE);
         buttonAddFerryTime.setVisibility(View.GONE);
+        buttonStartTimer.setVisibility(View.GONE);
         timeAddedCounter = 0;
         setButtonInStoppedTimerState();
     }
@@ -405,13 +410,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Define Cancel button behavior
         dialogBuilder.setNegativeButton("NONE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Handle the Cancel button click (if needed)
                 dialog.dismiss();
-                startTimer(calculateDriveTimeInSeconds());
+                startTimer(remainingSeconds);
             }
         });
         AlertDialog dialog = dialogBuilder.create();
