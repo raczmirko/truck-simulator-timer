@@ -87,22 +87,10 @@ public class MainActivity extends AppCompatActivity {
                     ).show();
                 }
                 else{
-                    buttonAddOneMinute.setVisibility(View.VISIBLE);
-                    buttonStopTimer.setVisibility(View.VISIBLE);
-                    buttonAddFerryTime.setVisibility(View.VISIBLE);
-                    editTextTotalHours.setEnabled(false);
-                    editTextTotalMinutes.setEnabled(false);
-                    editTextTotalFerryDistance.setEnabled(false);
-                    buttonSubtractFerryTime.setEnabled(false);
-                    buttonCalculate.setEnabled(false);
-                    buttonCalculate.setVisibility(View.GONE);
-                    buttonSubtractFerryTime.setVisibility(View.GONE);
-                    cardViewTime.setVisibility(View.GONE);
-                    cardViewFerry.setVisibility(View.GONE);
+                    changeUIWhenTimerRuns();
                     //Changing button to pause button
                     buttonStartTimer.setText(R.string.pause);
                     remainingSeconds = calculateDriveTimeInSeconds();
-                    Log.d("remainingSeconds", String.valueOf(remainingSeconds));
                     //Initial start of timer
                     showDistanceToStartingCompanyDialog();
                 }
@@ -120,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         buttonStopTimer.setOnClickListener(view -> endTimer());
         buttonReset.setOnClickListener(view -> {
             endTimer();
-            resetUI();
+            resetUIWhenTimerStops();
         });
         buttonAddOneMinute.setOnClickListener(view -> {
             remainingSeconds += 60;
@@ -156,7 +144,22 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void resetUI() {
+    private void changeUIWhenTimerRuns() {
+        buttonAddOneMinute.setVisibility(View.VISIBLE);
+        buttonStopTimer.setVisibility(View.VISIBLE);
+        buttonAddFerryTime.setVisibility(View.VISIBLE);
+        editTextTotalHours.setEnabled(false);
+        editTextTotalMinutes.setEnabled(false);
+        editTextTotalFerryDistance.setEnabled(false);
+        buttonSubtractFerryTime.setEnabled(false);
+        buttonCalculate.setEnabled(false);
+        buttonCalculate.setVisibility(View.GONE);
+        buttonSubtractFerryTime.setVisibility(View.GONE);
+        cardViewTime.setVisibility(View.GONE);
+        cardViewFerry.setVisibility(View.GONE);
+    }
+
+    private void resetUIWhenTimerStops() {
         textViewTimer.setText(R.string.timer_default);
         editTextTotalHours.setText(null);
         editTextTotalMinutes.setText(null);
@@ -176,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
         buttonSubtractFerryTime.setVisibility(View.VISIBLE);
         textViewTimer.setTextColor(Color.WHITE);
         buttonStartTimer.setVisibility(View.VISIBLE);
+        buttonStopTimer.setVisibility(View.VISIBLE);
     }
 
     private int subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(int subtractFrom, int ferryKilometres){
