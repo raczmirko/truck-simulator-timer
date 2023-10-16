@@ -67,10 +67,10 @@ public class MainActivity extends AppCompatActivity {
         editTextTotalHours = findViewById(R.id.editTextTotalHours);
         editTextTotalMinutes = findViewById(R.id.editTextTotalMinutes);
         editTextTotalFerryDistance = findViewById(R.id.editTextPickupHour);
+        editTextTotalFerryDistance.setText("0");
         textViewTimer = findViewById(R.id.textViewTimer);
         textViewEstimatedTimeValue = findViewById(R.id.textViewEstimatedTimeValue);
         textViewETAValue = findViewById(R.id.textViewETAValue);
-        editTextTotalFerryDistance.setText("0");
         setListeners();
     }
 
@@ -145,41 +145,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void changeUIWhenTimerRuns() {
+        buttonReset.setVisibility(View.GONE);
         buttonAddOneMinute.setVisibility(View.VISIBLE);
         buttonStopTimer.setVisibility(View.VISIBLE);
         buttonAddFerryTime.setVisibility(View.VISIBLE);
-        editTextTotalHours.setEnabled(false);
-        editTextTotalMinutes.setEnabled(false);
-        editTextTotalFerryDistance.setEnabled(false);
         buttonSubtractFerryTime.setEnabled(false);
         buttonCalculate.setEnabled(false);
         buttonCalculate.setVisibility(View.GONE);
         buttonSubtractFerryTime.setVisibility(View.GONE);
         cardViewTime.setVisibility(View.GONE);
         cardViewFerry.setVisibility(View.GONE);
+        editTextTotalHours.setEnabled(false);
+        editTextTotalMinutes.setEnabled(false);
+        editTextTotalFerryDistance.setEnabled(false);
     }
 
     private void resetUIWhenTimerStops() {
-        textViewTimer.setText(R.string.timer_default);
-        editTextTotalHours.setText(null);
-        editTextTotalMinutes.setText(null);
-        editTextTotalFerryDistance.setText("0");
-        textViewEstimatedTimeValue.setText(null);
-        textViewETAValue.setText(null);
-        editTextTotalHours.setEnabled(true);
-        editTextTotalMinutes.setEnabled(true);
-        editTextTotalFerryDistance.setEnabled(true);
-        buttonSubtractFerryTime.setEnabled(false);
-        buttonCalculate.setEnabled(true);
-        cardViewTime.setVisibility(View.VISIBLE);
-        cardViewFerry.setVisibility(View.VISIBLE);
         buttonCalculate.setEnabled(true);
         buttonSubtractFerryTime.setEnabled(true);
         buttonCalculate.setVisibility(View.VISIBLE);
-        buttonSubtractFerryTime.setVisibility(View.VISIBLE);
-        textViewTimer.setTextColor(Color.WHITE);
         buttonStartTimer.setVisibility(View.VISIBLE);
-        buttonStopTimer.setVisibility(View.VISIBLE);
+        buttonReset.setVisibility(View.VISIBLE);
+        buttonSubtractFerryTime.setEnabled(false);
+        buttonCalculate.setEnabled(true);
+        buttonSubtractFerryTime.setVisibility(View.VISIBLE);
+        cardViewTime.setVisibility(View.VISIBLE);
+        cardViewFerry.setVisibility(View.VISIBLE);
+        editTextTotalHours.setText(null);
+        editTextTotalMinutes.setText(null);
+        editTextTotalFerryDistance.setText("0");
+        editTextTotalHours.setEnabled(true);
+        editTextTotalMinutes.setEnabled(true);
+        editTextTotalFerryDistance.setEnabled(true);
+        textViewTimer.setText(R.string.timer_default);
+        textViewEstimatedTimeValue.setText(null);
+        textViewETAValue.setText(null);
+        textViewTimer.setTextColor(Color.WHITE);
     }
 
     private int subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(int subtractFrom, int ferryKilometres){
