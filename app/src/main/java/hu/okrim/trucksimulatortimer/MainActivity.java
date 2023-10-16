@@ -105,7 +105,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-        buttonStopTimer.setOnClickListener(view -> endTimer());
+        buttonStopTimer.setOnClickListener(view -> {
+            endTimer();
+            buttonReset.setVisibility(View.VISIBLE);
+        });
         buttonReset.setOnClickListener(view -> {
             endTimer();
             resetUIWhenTimerStops();
@@ -165,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
         buttonSubtractFerryTime.setEnabled(true);
         buttonCalculate.setVisibility(View.VISIBLE);
         buttonStartTimer.setVisibility(View.VISIBLE);
-        buttonReset.setVisibility(View.VISIBLE);
         buttonSubtractFerryTime.setEnabled(false);
         buttonCalculate.setEnabled(true);
         buttonSubtractFerryTime.setVisibility(View.VISIBLE);
