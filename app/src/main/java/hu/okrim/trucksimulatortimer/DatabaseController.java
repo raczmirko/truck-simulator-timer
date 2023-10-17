@@ -2,14 +2,10 @@ package hu.okrim.trucksimulatortimer;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DatabaseController extends SQLiteOpenHelper {
 
@@ -17,6 +13,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     public static final String COLUMN_ESTIMATED_TIME_SECONDS = "COLUMN_ESTIMATED_TIME_SECONDS";
     public static final String COLUMN_ACTUAL_TIME_SECONDS = "COLUMN_ACTUAL_TIME_SECONDS";
     public static final String COLUMN_ESTIMATED_ACTUAL_DIFFERENCE = "COLUMN_ESTIMATED_ACTUAL_DIFFERENCE";
+    public static final String COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME = "COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME";
     public static final String COLUMN_DATE = "COLUMN_DATE";
     public static final String DELIVERIES_TABLE = "DELIVERIES_TABLE";
 
@@ -32,6 +29,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 COLUMN_ESTIMATED_TIME_SECONDS + " INTEGER," +
                 COLUMN_ACTUAL_TIME_SECONDS + " INTEGER," +
                 COLUMN_ESTIMATED_ACTUAL_DIFFERENCE + " INTEGER," +
+                COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME + " REAL," +
                 COLUMN_DATE + " TEXT" +
                 ")";
         db.execSQL(createTableStatement);
@@ -51,8 +49,9 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put(COLUMN_ACTUAL_TIME_SECONDS, dataEntryModel.getActualTimeSeconds());
         cv.put(COLUMN_ESTIMATED_ACTUAL_DIFFERENCE, dataEntryModel.getEstimatedActualDifference());
         cv.put(COLUMN_DATE, dataEntryModel.getDateString());
+        cv.put(COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME, dataEntryModel.getDifferencePercentageOfTotalTime());
 
-        long insert = db.insert(DELIVERIES_TABLE, null, cv);
+        db.insert(DELIVERIES_TABLE, null, cv);
     }
 
     /*public List<DataEntryModel> getAllRecords(){
