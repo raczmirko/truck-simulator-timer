@@ -1,4 +1,6 @@
 package hu.okrim.trucksimulatortimer;
 
-public class SettingsActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class SettingsActivity extends AppCompatActivity {
 }

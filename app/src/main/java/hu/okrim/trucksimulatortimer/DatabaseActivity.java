@@ -1,4 +1,6 @@
 package hu.okrim.trucksimulatortimer;
 
-public class DatabaseActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class DatabaseActivity extends AppCompatActivity {
 }
