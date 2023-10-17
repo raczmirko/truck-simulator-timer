@@ -3,7 +3,6 @@ package hu.okrim.trucksimulatortimer;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -46,6 +45,18 @@ public class TimerActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        buttonStartTimer.setOnClickListener(null);
+        buttonCalculate.setOnClickListener(null);
+        buttonReset.setOnClickListener(null);
+        buttonStopTimer.setOnClickListener(null);
+        buttonAddFerryTime.setOnClickListener(null);
+        buttonSubtractFerryTime.setOnClickListener(null);
+        buttonAddOneMinute.setOnClickListener(null);
+    }
+
     private void initComponents() {
         buttonStartTimer = findViewById(R.id.buttonStartTimer);
         buttonStopTimer = findViewById(R.id.buttonStopTimer);
@@ -69,9 +80,7 @@ public class TimerActivity extends AppCompatActivity {
     private void setListeners(){
         buttonStartTimer.setOnClickListener(view -> {
             if(timerButtonState == TimerButtonState.STOPPED){
-                if(editTextTotalHours.getText().length() == 0 ||
-                        editTextTotalMinutes.getText().length() == 0 ||
-                        editTextTotalFerryDistance.getText().length() == 0){
+                if(checkIfSomeInputsAreNotFilled()){
                     Toast.makeText(
                             getApplicationContext(),
                             "Fill in the inputs before starting the timer!",
@@ -112,9 +121,7 @@ public class TimerActivity extends AppCompatActivity {
         });
         buttonAddFerryTime.setOnClickListener(v -> showFerryPopupDialog());
         buttonCalculate.setOnClickListener(view -> {
-            if(editTextTotalHours.getText().length() == 0 ||
-                    editTextTotalMinutes.getText().length() == 0 ||
-                    editTextTotalFerryDistance.getText().length() == 0){
+            if(checkIfSomeInputsAreNotFilled()){
                 Toast.makeText(
                         getApplicationContext(),
                         "Fill in the inputs before calculating!",
@@ -136,6 +143,12 @@ public class TimerActivity extends AppCompatActivity {
             setEstimatedTimeText(remainingSeconds);
             setETAText();
         });
+    }
+
+    private boolean checkIfSomeInputsAreNotFilled() {
+         return editTextTotalHours.getText().length() == 0 ||
+                editTextTotalMinutes.getText().length() == 0 ||
+                editTextTotalFerryDistance.getText().length() == 0;
     }
 
     private void changeUIWhenTimerRuns() {
@@ -214,6 +227,7 @@ public class TimerActivity extends AppCompatActivity {
 
     private void startTimer(int seconds) {
         if(!timerIsRunning){
+            totalEstimatedSeconds = seconds;
             buttonCalculate.setEnabled(false);
             buttonSubtractFerryTime.setEnabled(false);
             startTimerThread(seconds);
@@ -236,7 +250,6 @@ public class TimerActivity extends AppCompatActivity {
                 editTextTotalFerryDistance.getText() != null){
             int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
             realDriveTimeSeconds = subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(realDriveTimeSeconds,ferryDistance);
-            Log.d("ferrySubtractionCalled", "true");
         }
         return realDriveTimeSeconds;
     }

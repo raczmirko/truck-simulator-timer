@@ -1,25 +1,16 @@
 package hu.okrim.trucksimulatortimer;
 
-import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     Button buttonTimer, buttonSettings, buttonStatistics, buttonDatabase;
@@ -31,20 +22,30 @@ public class MainActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        buttonTimer.setOnClickListener(null);
+        buttonSettings.setOnClickListener(null);
+        buttonStatistics.setOnClickListener(null);
+        buttonDatabase.setOnClickListener(null);
+    }
+
     private void initComponents() {
         buttonTimer = findViewById(R.id.buttonMenuTimer);
         buttonSettings = findViewById(R.id.buttonMenuSettings);
         buttonStatistics = findViewById(R.id.buttonMenuStatistics);
         buttonDatabase = findViewById(R.id.buttonMenuDatabase);
+
         buttonTimer.setOnClickListener(this::loadSelectedPage);
         buttonSettings.setOnClickListener(this::loadSelectedPage);
         buttonStatistics.setOnClickListener(this::loadSelectedPage);
         buttonDatabase.setOnClickListener(this::loadSelectedPage);
     }
 
-    public void loadSelectedPage(android.view.View source) {
-        Class classToLoad = null;
-        Intent intent;
+    public void loadSelectedPage(View source) {
+        Class<?> classToLoad = null;
+        Intent intent = null;
 
         if (source == buttonTimer) {
             classToLoad = TimerActivity.class;
@@ -56,13 +57,22 @@ public class MainActivity extends AppCompatActivity {
             classToLoad = DatabaseActivity.class;
         }
 
-        //Defining which class to load in the new intent
-        intent = new Intent(this, classToLoad);
-        try {
-            startActivity(intent);
-        } catch (NullPointerException NPE) {
-            Log.d("ActivityError", NPE.getMessage());
+        if (classToLoad != null) {
+            intent = new Intent(this, classToLoad);
+        } else {
+            Log.e("ActivityError", "Invalid source for new intent");
+            // Optionally, you can show a Toast or perform some other error handling here.
+        }
+
+        if (intent != null) {
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Log.e("ActivityError", "Activity not found: " + e.getMessage());
+                // Optionally, you can show a Toast or perform some other error handling here.
+            }
         }
     }
+
 
 }
