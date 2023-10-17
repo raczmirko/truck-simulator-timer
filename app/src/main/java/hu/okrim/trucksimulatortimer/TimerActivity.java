@@ -22,14 +22,17 @@ import java.util.concurrent.TimeUnit;
 
 public class TimerActivity extends AppCompatActivity {
     TimerButtonState timerButtonState = TimerButtonState.STOPPED;
+    @SuppressLint("SimpleDateFormat")
+    SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     boolean timerIsRunning = false;
     String estimatedTimeTextBackup = null;
     final double ferryOneKmInGameMinutesShortDistance = 1.71;
     final double ferryOneKmInGameMinutesLongDistance = 1.248;
-    int remainingSeconds, timeAddedCounter = 0;
+    int remainingSeconds, passedSeconds, totalEstimatedSeconds, timeAddedCounter = 0;
     Button buttonStartTimer, buttonStopTimer, buttonReset, buttonAddOneMinute, buttonAddFerryTime,
             buttonCalculate, buttonSubtractFerryTime;
     CardView cardViewTime, cardViewFerry;
+    DatabaseController databaseController = new DatabaseController(TimerActivity.this);
     EditText editTextTotalHours, editTextTotalMinutes, editTextTotalFerryDistance;
     TextView textViewTimer, textViewEstimatedTimeValue, textViewETAValue;
     Thread timer;
@@ -99,7 +102,6 @@ public class TimerActivity extends AppCompatActivity {
             buttonReset.setVisibility(View.VISIBLE);
         });
         buttonReset.setOnClickListener(view -> {
-            endTimer();
             resetUIWhenTimerStops();
         });
         buttonAddOneMinute.setOnClickListener(view -> {
@@ -257,6 +259,7 @@ public class TimerActivity extends AppCompatActivity {
     public void startTimerThread(int seconds){
         timerIsRunning = true;
         remainingSeconds = seconds;
+        passedSeconds = 0;
         textViewTimer.setText(TimeFormatController.createTimeText(remainingSeconds));
         timer = new Thread(){
             @Override
@@ -275,6 +278,7 @@ public class TimerActivity extends AppCompatActivity {
                         //Since the time format is 00:00:00 (it's not really useful to track more...)
                         //An int can store values up to 2 billion so maximum 356 million fits
                         remainingSeconds--;
+                        passedSeconds++;
                         runOnUiThread(() -> {
                             // Updating timer text on UI thread
                             if(remainingSeconds < 0){textViewTimer.setTextColor(Color.RED);}
@@ -315,6 +319,7 @@ public class TimerActivity extends AppCompatActivity {
         buttonStartTimer.setVisibility(View.GONE);
         timeAddedCounter = 0;
         setButtonInStoppedTimerState();
+        saveDeliveryToDatabase();
     }
     public void showFerryPopupDialog(){
         // Create the dialog
@@ -371,5 +376,11 @@ public class TimerActivity extends AppCompatActivity {
         });
         AlertDialog dialog = dialogBuilder.create();
         dialog.show();
+    }
+
+    public void saveDeliveryToDatabase(){
+        String date = SDF.format(new Date());
+        DataEntryModel dataEntryModel = new DataEntryModel(totalEstimatedSeconds, passedSeconds, date);
+        databaseController.addDelivery(dataEntryModel);
     }
 }
