@@ -1,6 +1,8 @@
 package hu.okrim.trucksimulatortimer;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -273,16 +275,22 @@ public class TimerActivity extends AppCompatActivity {
         return realDriveTimeSeconds;
     }
 
+    double loadTacticMultiplierFromSharedPreferences(){
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        return sharedPreferences.getFloat("estimationTacticValue", 1.0f);
+    }
+
     private int multiplyRealDriveTimeSecondsWithAverageDifferencePercentage(int realDriveTimeSeconds) {
         double differencePercentage = databaseController.calculateExtraSecondsByPastDeliveryTimes(realDriveTimeSeconds);
+        double threshold = loadTacticMultiplierFromSharedPreferences();
         if(differencePercentage < 0){
             //If the percentage is smaller than -30 then change it to -30
-                if(differencePercentage < -0.3){differencePercentage = -0.3;}
+                if(differencePercentage < (threshold * -1)){differencePercentage = threshold * -1;}
             realDriveTimeSeconds += (int)Math.ceil((realDriveTimeSeconds * differencePercentage)*(-1));
         }
         else {
             //If the percentage is more than 30 then change it to 30
-            if(differencePercentage > 0.3){differencePercentage = 0.3;}
+            if(differencePercentage > threshold){differencePercentage = threshold;}
             realDriveTimeSeconds -= (int)Math.ceil(realDriveTimeSeconds * differencePercentage);
         }
         return realDriveTimeSeconds;
