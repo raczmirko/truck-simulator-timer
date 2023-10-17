@@ -356,6 +356,7 @@
                 android:layout_height="80dp"
                 android:backgroundTint="@android:color/holo_green_dark"
                 android:text="@string/timer_start"
+                android:textColor="@color/white"
                 android:textSize="20sp"
                 app:cornerRadius="10dp"
                 tools:ignore="VisualLintButtonSize" />
@@ -367,6 +368,7 @@
                 android:layout_height="80dp"
                 android:backgroundTint="@android:color/holo_red_light"
                 android:text="@string/timer_stop"
+                android:textColor="@color/white"
                 android:textSize="20sp"
                 android:visibility="gone"
                 app:cornerRadius="10dp"
@@ -380,6 +382,7 @@
                 android:layout_marginBottom="30dp"
                 android:backgroundTint="@android:color/holo_orange_dark"
                 android:text="@string/reset"
+                android:textColor="@color/white"
                 android:textSize="20sp"
                 app:cornerRadius="10dp"
                 tools:ignore="TextContrastCheck,VisualLintButtonSize" />
