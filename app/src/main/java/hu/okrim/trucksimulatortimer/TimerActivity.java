@@ -26,24 +26,13 @@ public class TimerActivity extends AppCompatActivity {
     String estimatedTimeTextBackup = null;
     final double ferryOneKmInGameMinutesShortDistance = 1.71;
     final double ferryOneKmInGameMinutesLongDistance = 1.248;
-    int remainingSeconds = 0;
-    int timeAddedCounter = 0;
-    Button buttonStartTimer;
-    Button buttonStopTimer;
-    Button buttonReset;
-    Button buttonAddOneMinute;
-    Button buttonAddFerryTime;
-    Button buttonCalculate;
-    Button buttonSubtractFerryTime;
-    CardView cardViewTime;
-    CardView cardViewFerry;
-    EditText editTextTotalHours;
-    EditText editTextTotalMinutes;
-    EditText editTextTotalFerryDistance;
+    int remainingSeconds, timeAddedCounter = 0;
+    Button buttonStartTimer, buttonStopTimer, buttonReset, buttonAddOneMinute, buttonAddFerryTime,
+            buttonCalculate, buttonSubtractFerryTime;
+    CardView cardViewTime, cardViewFerry;
+    EditText editTextTotalHours, editTextTotalMinutes, editTextTotalFerryDistance;
+    TextView textViewTimer, textViewEstimatedTimeValue, textViewETAValue;
     Thread timer;
-    TextView textViewTimer;
-    TextView textViewEstimatedTimeValue;
-    TextView textViewETAValue;
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
     @Override
