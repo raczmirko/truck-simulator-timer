@@ -16,8 +16,13 @@ public class DataEntryModel {
     }
 
     private double calculateDifferencePercentage() {
-        double percentage = (double)estimatedActualDifference / estimatedTimeSeconds;
-        return estimatedActualDifference < 0 ? percentage * -1 : percentage;
+        if(estimatedActualDifference != 0 && estimatedTimeSeconds != 0){
+            return (double)estimatedActualDifference / estimatedTimeSeconds;
+        }
+        else{
+            return 1;
+        }
+
     }
 
     public int getEstimatedTimeSeconds() {
