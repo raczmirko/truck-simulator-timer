@@ -3,6 +3,7 @@ package hu.okrim.trucksimulatortimer;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -28,6 +29,7 @@ public class TimerActivity extends AppCompatActivity {
     final double ferryOneKmInGameMinutesShortDistance = 1.71;
     final double ferryOneKmInGameMinutesLongDistance = 1.248;
     int remainingSeconds, passedSeconds, totalEstimatedSeconds, timeAddedCounter = 0;
+    int defaultTimerTextColor;
     Button buttonStartTimer, buttonStopTimer, buttonReset, buttonAddOneMinute, buttonAddFerryTime,
             buttonCalculate, buttonSubtractFerryTime;
     CardView cardViewTime, cardViewFerry;
@@ -75,6 +77,7 @@ public class TimerActivity extends AppCompatActivity {
         textViewEstimatedTimeValue = findViewById(R.id.textViewEstimatedTimeValue);
         textViewETAValue = findViewById(R.id.textViewETAValue);
         setListeners();
+        defaultTimerTextColor = textViewTimer.getCurrentTextColor();
     }
 
     private void setListeners(){
@@ -131,6 +134,7 @@ public class TimerActivity extends AppCompatActivity {
             else {
                 buttonSubtractFerryTime.setEnabled(true);
                 remainingSeconds = calculateDriveTimeInSeconds();
+                Log.d("calculatedPercentage:", String.valueOf(databaseController.approximateRemainingSecondsByPastDeliveryTimes(remainingSeconds)));
                 int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
                 remainingSeconds = subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(remainingSeconds,ferryDistance);
                 setEstimatedTimeText(remainingSeconds);
@@ -186,7 +190,7 @@ public class TimerActivity extends AppCompatActivity {
         textViewTimer.setText(R.string.timer_default);
         textViewEstimatedTimeValue.setText(null);
         textViewETAValue.setText(null);
-        textViewTimer.setTextColor(Color.WHITE);
+        textViewTimer.setTextColor(defaultTimerTextColor);
     }
 
     private int subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(int subtractFrom, int ferryKilometres){
