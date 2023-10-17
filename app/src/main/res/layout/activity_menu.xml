@@ -77,7 +77,7 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/buttonStartTimer2"
+                android:id="@+id/buttonMenuTimer"
                 style="@style/Widget.Material3.Button"
                 android:layout_width="match_parent"
                 android:layout_height="100sp"
@@ -93,7 +93,7 @@
                 tools:ignore="VisualLintButtonSize,DuplicateSpeakableTextCheck" />
 
             <Button
-                android:id="@+id/buttonStartTimer3"
+                android:id="@+id/buttonMenuSettings"
                 style="@style/Widget.Material3.Button"
                 android:layout_width="match_parent"
                 android:layout_height="100sp"
@@ -109,7 +109,7 @@
                 tools:ignore="VisualLintButtonSize,TextContrastCheck" />
 
             <Button
-                android:id="@+id/buttonStartTimer4"
+                android:id="@+id/buttonMenuStatistics"
                 style="@style/Widget.Material3.Button"
                 android:layout_width="match_parent"
                 android:layout_height="100sp"
@@ -125,7 +125,7 @@
                 tools:ignore="VisualLintButtonSize" />
 
             <Button
-                android:id="@+id/buttonStartTimer5"
+                android:id="@+id/buttonMenuDatabase"
                 style="@style/Widget.Material3.Button"
                 android:layout_width="match_parent"
                 android:layout_height="100sp"
