@@ -91,12 +91,21 @@ public class TimerActivity extends AppCompatActivity {
                     ).show();
                 }
                 else{
-                    changeUIWhenTimerRuns();
-                    //Changing button to pause button
-                    buttonStartTimer.setText(R.string.pause);
-                    remainingSeconds = calculateDriveTimeInSeconds();
-                    //Initial start of timer
-                    showDistanceToStartingCompanyDialog();
+                    if(!areAllInputsAreZero()){
+                        changeUIWhenTimerRuns();
+                        //Changing button to pause button
+                        buttonStartTimer.setText(R.string.pause);
+                        remainingSeconds = calculateDriveTimeInSeconds();
+                        //Initial start of timer
+                        showDistanceToStartingCompanyDialog();
+                    }
+                    else{
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "The inputs cannot all be zero!",
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
                 }
             }
             else if(timerButtonState == TimerButtonState.RUNNING){
@@ -134,7 +143,6 @@ public class TimerActivity extends AppCompatActivity {
             else {
                 buttonSubtractFerryTime.setEnabled(true);
                 remainingSeconds = calculateDriveTimeInSeconds();
-                Log.d("calculatedPercentage:", String.valueOf(databaseController.approximateRemainingSecondsByPastDeliveryTimes(remainingSeconds)));
                 int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
                 remainingSeconds = subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(remainingSeconds,ferryDistance);
                 setEstimatedTimeText(remainingSeconds);
@@ -147,6 +155,11 @@ public class TimerActivity extends AppCompatActivity {
             setEstimatedTimeText(remainingSeconds);
             setETAText();
         });
+    }
+
+    private boolean areAllInputsAreZero() {
+        return editTextTotalHours.getText().toString().equals("0") && 
+                editTextTotalMinutes.getText().toString().equals("0");
     }
 
     private boolean checkIfSomeInputsAreNotFilled() {
@@ -254,6 +267,23 @@ public class TimerActivity extends AppCompatActivity {
                 editTextTotalFerryDistance.getText() != null){
             int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
             realDriveTimeSeconds = subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(realDriveTimeSeconds,ferryDistance);
+        }
+        // Adding or subtracting the average difference from calculated time to delivery
+        realDriveTimeSeconds = multiplyRealDriveTimeSecondsWithAverageDifferencePercentage(realDriveTimeSeconds);
+        return realDriveTimeSeconds;
+    }
+
+    private int multiplyRealDriveTimeSecondsWithAverageDifferencePercentage(int realDriveTimeSeconds) {
+        double differencePercentage = databaseController.calculateExtraSecondsByPastDeliveryTimes(realDriveTimeSeconds);
+        if(differencePercentage < 0){
+            //If the percentage is smaller than -30 then change it to -30
+                if(differencePercentage < -0.3){differencePercentage = -0.3;}
+            realDriveTimeSeconds += (int)Math.ceil((realDriveTimeSeconds * differencePercentage)*(-1));
+        }
+        else {
+            //If the percentage is more than 30 then change it to 30
+            if(differencePercentage > 0.3){differencePercentage = 0.3;}
+            realDriveTimeSeconds -= (int)Math.ceil(realDriveTimeSeconds * differencePercentage);
         }
         return realDriveTimeSeconds;
     }
