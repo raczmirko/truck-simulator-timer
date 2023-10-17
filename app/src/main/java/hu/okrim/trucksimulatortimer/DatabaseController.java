@@ -2,10 +2,14 @@ package hu.okrim.trucksimulatortimer;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
+
+import java.util.Locale;
 
 public class DatabaseController extends SQLiteOpenHelper {
 
@@ -52,6 +56,29 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put(COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME, dataEntryModel.getDifferencePercentageOfTotalTime());
 
         db.insert(DELIVERIES_TABLE, null, cv);
+    }
+
+    public double calculateExtraSecondsByPastDeliveryTimes(int seconds){
+        double result = 0;
+
+        //Get data from the Database.
+        String queryString = String.format(Locale.US, "SELECT AVG(COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME) FROM %s " +
+                                           "WHERE COLUMN_ESTIMATED_TIME_SECONDS >= %f AND " +
+                                           "COLUMN_ESTIMATED_TIME_SECONDS <= %f", DELIVERIES_TABLE,seconds*0.9,seconds*1.1);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(queryString, null);
+
+        //If first element was found, meaning there were results...
+        if(cursor.moveToFirst()){
+            //loop through cursor (result set) and create new customer objects, put them in returnList
+            do{
+                result = cursor.getDouble(0);
+            }while(cursor.moveToNext());
+        }
+        //Close both cursor and connection.
+        cursor.close();
+        db.close();
+        return result;
     }
 
     /*public List<DataEntryModel> getAllRecords(){
