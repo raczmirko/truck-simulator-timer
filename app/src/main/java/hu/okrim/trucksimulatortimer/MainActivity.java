@@ -49,11 +49,11 @@ public class MainActivity extends AppCompatActivity {
         if (source == buttonTimer) {
             classToLoad = TimerActivity.class;
         } else if (source == buttonSettings) {
-            classToLoad = TimerActivity.class;
+            classToLoad = SettingsActivity.class;
         } else if (source == buttonStatistics) {
-            classToLoad = TimerActivity.class;
+            classToLoad = StatisticsActivity.class;
         } else if (source == buttonDatabase) {
-            classToLoad = TimerActivity.class;
+            classToLoad = DatabaseActivity.class;
         }
 
         //Defining which class to load in the new intent
