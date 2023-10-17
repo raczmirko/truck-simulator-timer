@@ -306,7 +306,7 @@ public class TimerActivity extends AppCompatActivity {
 
     private void setETAText(){
         long currentTimeMillis = System.currentTimeMillis(); // Get current time in milliseconds
-        long etaMillis = currentTimeMillis + (remainingSeconds * 1000L); // Add seconds in milliseconds
+        long etaMillis = currentTimeMillis + (calculateDriveTimeInSeconds() * 1000L); // Add seconds in milliseconds
         String formattedTime = timeFormat.format(new Date(etaMillis));
         textViewETAValue.setText(formattedTime);
     }
