@@ -40,4 +40,9 @@
     <string name="button_statistics">Statistics</string>
     <string name="button_database">Database</string>
     <string name="menu_subtitle">Application made by Okrim</string>
+    <string name="settings">Settings</string>
+    <string name="set_estimation_tactic">Set estimation strategy:</string>
+    <string name="optimistic">Optimistic (up to +/- 10%)</string>
+    <string name="realistic">Realistic (up to +/- 30%)</string>
+    <string name="pessimistic">Pessimistic (up to +/- 50%)</string>
 </resources>
