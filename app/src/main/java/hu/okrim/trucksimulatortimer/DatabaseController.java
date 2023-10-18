@@ -2,6 +2,7 @@ package hu.okrim.trucksimulatortimer;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -20,9 +21,11 @@ public class DatabaseController extends SQLiteOpenHelper {
     public static final String COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME = "COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME";
     public static final String COLUMN_DATE = "COLUMN_DATE";
     public static final String DELIVERIES_TABLE = "DELIVERIES_TABLE";
+    Context context;
 
     public DatabaseController(@Nullable Context context) {
         super(context, "deliveries.db", null, 1);
+        this.context = context;
     }
     //This is called the first time a database is accessed.
     //Here we have code to create a new database.
@@ -45,6 +48,12 @@ public class DatabaseController extends SQLiteOpenHelper {
         //Since we only run a local database this function is emitted...
     }
 
+    public void wipeDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String wipeStatement = "DELETE FROM " + DELIVERIES_TABLE;
+        db.execSQL(wipeStatement);
+    }
+
     public void addDelivery(DataEntryModel dataEntryModel){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -60,13 +69,17 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     public double calculateExtraSecondsByPastDeliveryTimes(int seconds){
         double result = 0;
-
+        double boundRadius = getSampleBound();
+        double lowerBound = 1 - boundRadius;
+        double upperBound = 1 + boundRadius;
         //Get data from the Database.
         String queryString = String.format(Locale.US, "SELECT AVG(COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME) FROM %s " +
                                            "WHERE COLUMN_ESTIMATED_TIME_SECONDS >= %f AND " +
-                                           "COLUMN_ESTIMATED_TIME_SECONDS <= %f", DELIVERIES_TABLE,seconds*0.9,seconds*1.1);
+                                           "COLUMN_ESTIMATED_TIME_SECONDS <= %f", DELIVERIES_TABLE, seconds * lowerBound, seconds * upperBound);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);
+
+        Log.d("queryString", queryString);
 
         //If first element was found, meaning there were results...
         if(cursor.moveToFirst()){
@@ -79,6 +92,11 @@ public class DatabaseController extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return result;
+    }
+
+    public double getSampleBound(){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        return sharedPreferences.getFloat("samplingStrategyValue", 0.0f);
     }
 
     /*public List<DataEntryModel> getAllRecords(){
