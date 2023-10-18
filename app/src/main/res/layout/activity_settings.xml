@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -62,8 +63,10 @@
                 android:background="@android:color/holo_orange_dark" />
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewEstimationStrategy"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
                 android:backgroundTint="#03A9F4"
                 app:cardCornerRadius="5dp">
 
@@ -74,11 +77,12 @@
                     android:padding="10dp">
 
                     <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="match_parent"
+                        android:id="@+id/textViewSettingsEstimationStrategy"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="monospace"
                         android:text="@string/set_estimation_tactic"
+                        android:textAlignment="viewStart"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -111,10 +115,87 @@
                             android:hapticFeedbackEnabled="true"
                             android:text="@string/pessimistic"
                             android:textColor="@color/black" />
+
                     </RadioGroup>
+
+                    <Button
+                        android:id="@+id/buttonSettingsHelpEstimation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/holo_orange_dark"
+                        android:text="@string/explain"
+                        android:textColor="@color/white"
+                        app:cornerRadius="5dp" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="#03A9F4"
+                app:cardCornerRadius="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/textViewSettingsSamplingStrategy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:text="@string/set_sampling_strategy"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSettingsSampling10"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hapticFeedbackEnabled="true"
+                            android:text="@string/plus_minus_10"
+                            android:textColor="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSettingsSampling20"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:hapticFeedbackEnabled="true"
+                            android:text="@string/plus_minus_20"
+                            android:textColor="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSettingsSampling30"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hapticFeedbackEnabled="true"
+                            android:text="@string/plus_minus_30"
+                            android:textColor="@color/black" />
+                    </RadioGroup>
+
+                    <Button
+                        android:id="@+id/buttonSettingsHelpSampling"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/holo_orange_dark"
+                        android:text="@string/explain"
+                        android:textColor="@color/white"
+                        app:cornerRadius="5dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

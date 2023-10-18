@@ -45,4 +45,12 @@
     <string name="optimistic">Optimistic (up to +/- 10%)</string>
     <string name="realistic">Realistic (up to +/- 30%)</string>
     <string name="pessimistic">Pessimistic (up to +/- 50%)</string>
+    <string name="help">Help</string>
+    <string name="explain">Explain what this does</string>
+    <string name="set_sampling_strategy">Set sampling strategy:</string>
+    <string name="plus_minus_10">plus/minus 10%</string>
+    <string name="plus_minus_20">plus/minus 20%</string>
+    <string name="plus_minus_30">plus/minus 30%</string>
+    <string name="help_sampling">When calculating the estimated arrival time the app looks at previous drives that were of similar distance as the current drive, and adjusts the current estimation by how good the previous estimations were (if they were on time or not). Similar means in a plus/minus something percentage, this is what you can set. Example: if you set plus/minus 10% and your current drive\'s original estimated time is 10 minutes than all previous drives from 9 to 11 minutes will be considered.</string>
+    <string name="help_estimation">plus/minus 30%</string>
 </resources>
