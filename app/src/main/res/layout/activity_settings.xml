@@ -200,7 +200,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:backgroundTint="#FFEB3B"
+                android:backgroundTint="#4CAF50"
                 app:cardCornerRadius="5dp">
 
                 <LinearLayout
