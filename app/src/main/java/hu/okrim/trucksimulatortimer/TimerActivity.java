@@ -265,14 +265,27 @@ public class TimerActivity extends AppCompatActivity {
         // Then we multiply by 3 because 1 in game minute is 3 seconds IRL
         // And our method needs to return seconds
         realDriveTimeSeconds = inputTotalInMinutes * 3;
+        // Then, if ferry distance was given we subtract the ferry time from the seconds remaining
         if(!editTextTotalFerryDistance.getText().toString().equals("0") &&
                 editTextTotalFerryDistance.getText() != null){
             int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
             realDriveTimeSeconds = subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(realDriveTimeSeconds,ferryDistance);
         }
-        // Adding or subtracting the average difference from calculated time to delivery
+        // Multiplying the calculated seconds by the expectedErrorRate due to traffic
+        realDriveTimeSeconds = multiplyRealDriveTimeSecondsWithExpectedErrorPercentage(realDriveTimeSeconds);
+        // Multiplying by the average error rate calculated from previous drives of similar distance
         realDriveTimeSeconds = multiplyRealDriveTimeSecondsWithAverageDifferencePercentage(realDriveTimeSeconds);
         return realDriveTimeSeconds;
+    }
+
+    private int multiplyRealDriveTimeSecondsWithExpectedErrorPercentage(int realDriveTimeSeconds) {
+        double errorMultiplier = loadExpectedErrorPercentageFromSharedPreferences();
+        return realDriveTimeSeconds + (int)(realDriveTimeSeconds * errorMultiplier);
+    }
+
+    double loadExpectedErrorPercentageFromSharedPreferences(){
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        return sharedPreferences.getFloat("expectedErrorPercent", 0.1f);
     }
 
     double loadTacticMultiplierFromSharedPreferences(){
