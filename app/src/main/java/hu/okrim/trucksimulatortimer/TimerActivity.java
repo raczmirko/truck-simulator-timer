@@ -301,7 +301,7 @@ public class TimerActivity extends AppCompatActivity {
         totalSeconds %= 3600;
         int minutes = (int)Math.ceil(totalSeconds / 60.0);
         textViewEstimatedTimeValue.setText(String.format("~ %s h %s min", hours, minutes));
-        estimatedTimeTextBackup = String.format("~ %s hours %s minutes", hours, minutes);
+        estimatedTimeTextBackup = String.format("~ %s h %s min", hours, minutes);
     }
 
     private void setETAText(){
