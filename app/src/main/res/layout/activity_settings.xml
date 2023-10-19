@@ -162,6 +162,7 @@
                             android:id="@+id/radioButtonSettingsSampling10"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:checked="true"
                             android:hapticFeedbackEnabled="true"
                             android:text="@string/plus_minus_10"
                             android:textColor="@color/black" />
@@ -170,7 +171,6 @@
                             android:id="@+id/radioButtonSettingsSampling20"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:checked="true"
                             android:hapticFeedbackEnabled="true"
                             android:text="@string/plus_minus_20"
                             android:textColor="@color/black" />
