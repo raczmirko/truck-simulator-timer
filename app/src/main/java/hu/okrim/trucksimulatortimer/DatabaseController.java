@@ -10,6 +10,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class DatabaseController extends SQLiteOpenHelper {
@@ -65,6 +67,40 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put(COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME, dataEntryModel.getDifferencePercentageOfTotalTime());
 
         db.insert(DELIVERIES_TABLE, null, cv);
+    }
+
+    public void deleteDelivery(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String deleteStatement = "DELETE FROM " + DELIVERIES_TABLE + " WHERE " + COLUMN_ID + " = " + id;
+        db.execSQL(deleteStatement);
+    }
+
+
+    public List<DataFetchModel> getAllRecords(){
+        List<DataFetchModel> returnList= new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectStatement = "SELECT * FROM " + DELIVERIES_TABLE;
+        Cursor cursor = db.rawQuery(selectStatement, null);
+
+        if(cursor.moveToFirst()){
+            //loop through cursor (result set) and create new customer objects, put them in returnList
+            do{
+                DataFetchModel dataFetchModel = new DataFetchModel(
+                        cursor.getInt(0),
+                        cursor.getInt(1),
+                        cursor.getInt(2),
+                        cursor.getInt(3),
+                        cursor.getDouble(4),
+                       cursor.getString(5)
+                );
+                returnList.add(dataFetchModel);
+            }while(cursor.moveToNext());
+        }
+        //Close both cursor and connection.
+        cursor.close();
+        db.close();
+
+        return returnList;
     }
 
     public double calculateExtraSecondsByPastDeliveryTimes(int seconds){

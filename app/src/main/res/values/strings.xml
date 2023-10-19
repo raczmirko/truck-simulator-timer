@@ -56,4 +56,6 @@
     <string name="help_estimation">When calculating the estimated arrival time the app looks at previous drives that were of similar distance as the current drive, and adjusts the current estimation by the error rate of the previous  drives. This setting is to set the error rate\'s maximum size. Example: you choose the Optimistic strategy and the previous drives show a 15% error rate (drives took 15% longer than estimated) but the current calculation only calculates with a 10% error rate.</string>
     <string name="wipe_database">Wipe database:</string>
     <string name="delete_all_data">Delete all data</string>
+    <string name="delete">Delete</string>
+    <string name="confirm_delete">Are you sure want to delete this delivery? This cannot be reverted.</string>
 </resources>
