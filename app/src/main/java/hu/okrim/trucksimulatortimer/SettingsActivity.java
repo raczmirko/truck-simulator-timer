@@ -16,8 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity {
     RadioButton radioButtonOptimistic, radioButtonRealistic, radioButtonPessimistic,
-            radioButtonPlusMinus10, radioButtonPlusMinus20, radioButtonPlusMinus30;
-    Button buttonHelpEstimation, buttonHelpSampling, buttonWipeDB;
+            radioButtonPlusMinus10, radioButtonPlusMinus20, radioButtonPlusMinus30,
+            radioButtonExpectedError5, radioButtonExpectedError10, radioButtonExpectedError20,
+            radioButtonExpectedError30;
+    Button buttonHelpEstimation, buttonHelpSampling, buttonHelpExpectedError, buttonWipeDB;
     DatabaseController databaseController = new DatabaseController(SettingsActivity.this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         String estimationStrategy = sharedPreferences.getString("estimationTactic", "none");
         String samplingStrategy = sharedPreferences.getString("samplingStrategy", "none");
+        String expectedErrorPercent = sharedPreferences.getString("expectedErrorPercentText", "none");
         switch (estimationStrategy) {
             case "optimistic":
                 radioButtonOptimistic.setChecked(true);
@@ -54,6 +57,20 @@ public class SettingsActivity extends AppCompatActivity {
                 radioButtonPlusMinus30.setChecked(true);
                 break;
         }
+        switch (expectedErrorPercent){
+            case "5":
+                radioButtonExpectedError5.setChecked(true);
+                break;
+            case "10":
+                radioButtonExpectedError10.setChecked(true);
+                break;
+            case "20":
+                radioButtonExpectedError20.setChecked(true);
+                break;
+            case "30":
+                radioButtonExpectedError30.setChecked(true);
+                break;
+        }
     }
 
     private void addListeners() {
@@ -65,7 +82,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (isChecked) {
                     editor.putString("estimationTactic", "optimistic");
                     editor.putFloat("estimationTacticValue", 0.1f);
-                    editor.apply(); // Save the value in SharedPreferences
+                    editor.apply();
                 }
             }
         });
@@ -75,7 +92,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (isChecked) {
                     editor.putString("estimationTactic", "realistic");
                     editor.putFloat("estimationTacticValue", 0.3f);
-                    editor.apply(); // Save the value in SharedPreferences
+                    editor.apply();
                 }
             }
         });
@@ -85,7 +102,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (isChecked) {
                     editor.putString("estimationTactic", "pessimistic");
                     editor.putFloat("estimationTacticValue", 0.5f);
-                    editor.apply(); // Save the value in SharedPreferences
+                    editor.apply();
                 }
             }
         });
@@ -95,7 +112,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (isChecked) {
                     editor.putString("samplingStrategy", "plusMinus10");
                     editor.putFloat("samplingStrategyValue", 0.1f);
-                    editor.apply(); // Save the value in SharedPreferences
+                    editor.apply();
                 }
             }
         });
@@ -105,7 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (isChecked) {
                     editor.putString("samplingStrategy", "plusMinus20");
                     editor.putFloat("samplingStrategyValue", 0.2f);
-                    editor.apply(); // Save the value in SharedPreferences
+                    editor.apply();
                 }
             }
         });
@@ -115,13 +132,54 @@ public class SettingsActivity extends AppCompatActivity {
                 if (isChecked) {
                     editor.putString("samplingStrategy", "plusMinus30");
                     editor.putFloat("samplingStrategyValue", 0.3f);
-                    editor.apply(); // Save the value in SharedPreferences
+                    editor.apply();
+                }
+            }
+        });
+        radioButtonExpectedError5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    editor.putString("expectedErrorPercentText", "5");
+                    editor.putFloat("expectedErrorPercent", 0.05f);
+                    editor.apply();
+                }
+            }
+        });
+        radioButtonExpectedError10.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    editor.putString("expectedErrorPercentText", "10");
+                    editor.putFloat("expectedErrorPercent", 0.1f);
+                    editor.apply();
+                }
+            }
+        });
+        radioButtonExpectedError20.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    editor.putString("expectedErrorPercentText", "20");
+                    editor.putFloat("expectedErrorPercent", 0.2f);
+                    editor.apply();
+                }
+            }
+        });
+        radioButtonExpectedError30.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    editor.putString("expectedErrorPercentText", "30");
+                    editor.putFloat("expectedErrorPercent", 0.3f);
+                    editor.apply();
                 }
             }
         });
         buttonHelpSampling.setOnClickListener(view -> showHelpDialog(R.string.help_sampling));
         buttonHelpEstimation.setOnClickListener(view -> showHelpDialog(R.string.help_estimation));
-        buttonWipeDB.setOnClickListener(view -> showConfirmationDialog(R.string.confirm_wipe));
+        buttonHelpExpectedError.setOnClickListener(view -> showHelpDialog(R.string.help_estimation));
+        buttonWipeDB.setOnClickListener(view -> showConfirmationDialog(R.string.help_expected_error));
     }
 
     private void initComoponents() {
@@ -131,8 +189,13 @@ public class SettingsActivity extends AppCompatActivity {
         radioButtonPlusMinus10 = findViewById(R.id.radioButtonSettingsSampling10);
         radioButtonPlusMinus20 = findViewById(R.id.radioButtonSettingsSampling20);
         radioButtonPlusMinus30 = findViewById(R.id.radioButtonSettingsSampling30);
+        radioButtonExpectedError5 = findViewById(R.id.radioButtonSettingsExpectedError5);
+        radioButtonExpectedError10 = findViewById(R.id.radioButtonSettingsExpectedError10);
+        radioButtonExpectedError20 = findViewById(R.id.radioButtonSettingsExpectedError20);
+        radioButtonExpectedError30 = findViewById(R.id.radioButtonSettingsExpectedError30);
         buttonHelpSampling = findViewById(R.id.buttonSettingsHelpSampling);
         buttonHelpEstimation = findViewById(R.id.buttonSettingsHelpEstimation);
+        buttonHelpExpectedError = findViewById(R.id.buttonSettingsHelpExpectedError);
         buttonWipeDB = findViewById(R.id.buttonWipeDB);
     }
 
