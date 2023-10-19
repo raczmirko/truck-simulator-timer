@@ -79,8 +79,6 @@ public class DatabaseController extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);
 
-        Log.d("queryString", queryString);
-
         //If first element was found, meaning there were results...
         if(cursor.moveToFirst()){
             //loop through cursor (result set) and create new customer objects, put them in returnList
