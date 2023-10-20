@@ -64,4 +64,8 @@
     <string name="expected_error_20">+20% of estimated time</string>
     <string name="expected_error_30">+30% of estimated time</string>
     <string name="help_expected_error">The delivery time shown in game is an optimistic estimation without factoring in traffic </string>
+    <string name="toast_missing_input">Fill in the inputs before starting the timer!</string>
+    <string name="toast_missing_input_calculate">Fill in the inputs before calculating!</string>
+    <string name="toast_negativ_value">This subtraction would result in a negative timer value!</string>
+    <string name="toast_all_inputs_zero">All inputs cannot be zero!</string>
 </resources>

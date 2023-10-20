@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -28,8 +27,9 @@ public class TimerActivity extends AppCompatActivity {
     SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     boolean timerIsRunning = false;
     String estimatedTimeTextBackup = null;
-    final double ferryOneKmInGameMinutesShortDistance = 1.71;
-    final double ferryOneKmInGameMinutesLongDistance = 1.248;
+    final double FERRY_ONE_KM_IN_GAME_MINUTES_SHORT_DISTANCE = 1.71;
+    final double FERRY_ONE_KM_IN_GAME_MINUTES_LONG_DISTANCE = 1.248;
+    final int GAME_MINUTE_IN_REAL_SECONDS = 3;
     int remainingSeconds, passedSeconds, totalEstimatedSeconds, timeAddedCounter = 0;
     int defaultTimerTextColor;
     Button buttonStartTimer, buttonStopTimer, buttonReset, buttonAddOneMinute, buttonAddFerryTime,
@@ -85,28 +85,20 @@ public class TimerActivity extends AppCompatActivity {
     private void setListeners(){
         buttonStartTimer.setOnClickListener(view -> {
             if(timerButtonState == TimerButtonState.STOPPED){
-                if(checkIfSomeInputsAreNotFilled()){
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "Fill in the inputs before starting the timer!",
-                            Toast.LENGTH_LONG
-                    ).show();
+                if(checkIfSomeInputsAreNotFilled()) {
+                    showToastMessage(R.string.toast_missing_input);
                 }
-                else{
-                    if(!areAllInputsAreZero()){
+                else {
+                    if(areAllInputsAreZero()) {
+                        showToastMessage(R.string.toast_all_inputs_zero);
+                    }
+                    else {
                         changeUIWhenTimerRuns();
                         //Changing button to pause button
                         buttonStartTimer.setText(R.string.pause);
                         remainingSeconds = calculateDriveTimeInSeconds();
                         //Initial start of timer
                         showDistanceToStartingCompanyDialog();
-                    }
-                    else{
-                        Toast.makeText(
-                                getApplicationContext(),
-                                "The inputs cannot all be zero!",
-                                Toast.LENGTH_LONG
-                        ).show();
                     }
                 }
             }
@@ -136,19 +128,20 @@ public class TimerActivity extends AppCompatActivity {
         buttonAddFerryTime.setOnClickListener(v -> showFerryPopupDialog());
         buttonCalculate.setOnClickListener(view -> {
             if(checkIfSomeInputsAreNotFilled()){
-                Toast.makeText(
-                        getApplicationContext(),
-                        "Fill in the inputs before calculating!",
-                        Toast.LENGTH_LONG
-                ).show();
+                showToastMessage(R.string.toast_missing_input_calculate);
             }
             else {
-                buttonSubtractFerryTime.setEnabled(true);
-                remainingSeconds = calculateDriveTimeInSeconds();
-                int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
-                remainingSeconds = subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(remainingSeconds,ferryDistance);
-                setEstimatedTimeText(remainingSeconds);
-                setETAText();
+                if(areAllInputsAreZero()) {
+                    showToastMessage(R.string.toast_all_inputs_zero);
+                }
+                else{
+                    buttonSubtractFerryTime.setEnabled(true);
+                    remainingSeconds = calculateDriveTimeInSeconds();
+                    int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
+                    remainingSeconds = subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(remainingSeconds,ferryDistance);
+                    setEstimatedTimeText(remainingSeconds);
+                    setETAText();
+                }
             }
         });
         buttonSubtractFerryTime.setOnClickListener(view -> {
@@ -157,6 +150,14 @@ public class TimerActivity extends AppCompatActivity {
             setEstimatedTimeText(remainingSeconds);
             setETAText();
         });
+    }
+
+    private void showToastMessage(int textResource) {
+        Toast.makeText(
+                getApplicationContext(),
+                textResource,
+                Toast.LENGTH_LONG
+        ).show();
     }
 
     private boolean areAllInputsAreZero() {
@@ -211,36 +212,28 @@ public class TimerActivity extends AppCompatActivity {
     private int subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(int subtractFrom, int ferryKilometres){
         double distanceInGameMinutes;
         if(ferryKilometres < 700){
-            distanceInGameMinutes = ferryKilometres * ferryOneKmInGameMinutesShortDistance;
+            distanceInGameMinutes = ferryKilometres * FERRY_ONE_KM_IN_GAME_MINUTES_SHORT_DISTANCE;
         }
         else {
-            distanceInGameMinutes = ferryKilometres * ferryOneKmInGameMinutesLongDistance;
+            distanceInGameMinutes = ferryKilometres * FERRY_ONE_KM_IN_GAME_MINUTES_LONG_DISTANCE;
         }
         // 1 in-game minute = 3 seconds IRL
-        int distanceInRealSeconds = (int)(distanceInGameMinutes * 3);
+        int distanceInRealSeconds = (int)(distanceInGameMinutes * GAME_MINUTE_IN_REAL_SECONDS);
 
         if(subtractFrom - distanceInRealSeconds > 0){
             subtractFrom -= distanceInRealSeconds;
         }
         else{
-            Toast.makeText(
-                    getApplicationContext(),
-                    "This subtraction would result in a negative timer value!",
-                    Toast.LENGTH_LONG
-            ).show();
+            showToastMessage(R.string.toast_negativ_value);
         }
         return subtractFrom;
     }
     private void subTractFerryTimeFromRemainingSecondsCalculatedFromFerryTime(int ferryMinutes){
-        if(remainingSeconds - ferryMinutes * 3 > 0){
-            remainingSeconds -= ferryMinutes * 3;
+        if(remainingSeconds - ferryMinutes * GAME_MINUTE_IN_REAL_SECONDS > 0){
+            remainingSeconds -= ferryMinutes * GAME_MINUTE_IN_REAL_SECONDS;
         }
         else{
-            Toast.makeText(
-                    getApplicationContext(),
-                    "This subtraction would result in a negative timer value!",
-                    Toast.LENGTH_LONG
-            ).show();
+            showToastMessage(R.string.toast_negativ_value);
         }
     }
 
@@ -264,7 +257,7 @@ public class TimerActivity extends AppCompatActivity {
         // We first convert the in-game time into a sum of seconds
         // Then we multiply by 3 because 1 in game minute is 3 seconds IRL
         // And our method needs to return seconds
-        realDriveTimeSeconds = inputTotalInMinutes * 3;
+        realDriveTimeSeconds = inputTotalInMinutes * GAME_MINUTE_IN_REAL_SECONDS;
         // Then, if ferry distance was given we subtract the ferry time from the seconds remaining
         if(!editTextTotalFerryDistance.getText().toString().equals("0") &&
                 editTextTotalFerryDistance.getText() != null){
@@ -435,7 +428,7 @@ public class TimerActivity extends AppCompatActivity {
             String textHour = editTextHour.getText().length() != 0 ? editTextHour.getText().toString() : "0";
             String textMinute = editTextMinute.getText().length() != 0 ? editTextMinute.getText().toString() : "0";
             int pickupInMinutes = Integer.parseInt(textHour) * 60 + Integer.parseInt(textMinute);
-            remainingSeconds += pickupInMinutes * 3;
+            remainingSeconds += pickupInMinutes * GAME_MINUTE_IN_REAL_SECONDS;
             startTimer(remainingSeconds);
         });
         dialogBuilder.setNegativeButton("NONE", (dialog, which) -> {
