@@ -5,14 +5,16 @@ public class DataEntryModel {
     private int actualTimeSeconds;
     private final int estimatedActualDifference;
     private double differencePercentageOfTotalTime;
+    private int ferryTimeSeconds;
     private String dateString;
 
-    public DataEntryModel(int estimatedTimeSeconds, int actualTimeSeconds, String dateString) {
+    public DataEntryModel(int estimatedTimeSeconds, int actualTimeSeconds, String dateString, int ferryTimeSeconds) {
         this.estimatedTimeSeconds = estimatedTimeSeconds;
         this.actualTimeSeconds = actualTimeSeconds;
         this.estimatedActualDifference = estimatedTimeSeconds - actualTimeSeconds;
         this.differencePercentageOfTotalTime = calculateDifferencePercentage();
         this.dateString = dateString;
+        this.ferryTimeSeconds = ferryTimeSeconds;
     }
 
     private double calculateDifferencePercentage() {
@@ -59,5 +61,13 @@ public class DataEntryModel {
 
     public void setDifferencePercentageOfTotalTime(double differencePercentageOfTotalTime) {
         this.differencePercentageOfTotalTime = differencePercentageOfTotalTime;
+    }
+
+    public int getFerryTimeSeconds() {
+        return ferryTimeSeconds;
+    }
+
+    public void setFerryTimeSeconds(int ferryTimeSeconds) {
+        this.ferryTimeSeconds = ferryTimeSeconds;
     }
 }

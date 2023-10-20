@@ -30,7 +30,7 @@ public class TimerActivity extends AppCompatActivity {
     final double FERRY_ONE_KM_IN_GAME_MINUTES_SHORT_DISTANCE = 1.71;
     final double FERRY_ONE_KM_IN_GAME_MINUTES_LONG_DISTANCE = 1.248;
     final int GAME_MINUTE_IN_REAL_SECONDS = 3;
-    int remainingSeconds, passedSeconds, totalEstimatedSeconds, timeAddedCounter = 0;
+    int remainingSeconds, passedSeconds, ferrySeconds, totalEstimatedSeconds, timeAddedCounter = 0;
     int defaultTimerTextColor;
     Button buttonStartTimer, buttonStopTimer, buttonReset, buttonAddOneMinute, buttonAddFerryTime,
             buttonCalculate, buttonSubtractFerryTime;
@@ -210,7 +210,7 @@ public class TimerActivity extends AppCompatActivity {
         }
         // 1 in-game minute = 3 seconds IRL
         int distanceInRealSeconds = (int)(distanceInGameMinutes * GAME_MINUTE_IN_REAL_SECONDS);
-
+        ferrySeconds = distanceInRealSeconds;
         if(subtractFrom - distanceInRealSeconds > 0){
             subtractFrom -= distanceInRealSeconds;
         }
@@ -222,6 +222,7 @@ public class TimerActivity extends AppCompatActivity {
     private void subTractFerryTimeFromRemainingSecondsCalculatedFromFerryTime(int ferryMinutes){
         if(remainingSeconds - ferryMinutes * GAME_MINUTE_IN_REAL_SECONDS > 0){
             remainingSeconds -= ferryMinutes * GAME_MINUTE_IN_REAL_SECONDS;
+            ferrySeconds += ferryMinutes * GAME_MINUTE_IN_REAL_SECONDS;
         }
         else{
             ToastController.showToastMessage(R.string.toast_negativ_value, getApplicationContext());
@@ -278,7 +279,7 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     private int multiplyRealDriveTimeSecondsWithAverageDifferencePercentage(int realDriveTimeSeconds) {
-        double differencePercentage = databaseController.calculateExtraSecondsByPastDeliveryTimes(realDriveTimeSeconds);
+        double differencePercentage = databaseController.calculateExtraSecondsByPastDeliveryTimes(realDriveTimeSeconds, ferrySeconds);
         double threshold = loadTacticMultiplierFromSharedPreferences();
         if(differencePercentage < 0){
             //If the percentage is smaller than -30 then change it to -30
@@ -311,7 +312,6 @@ public class TimerActivity extends AppCompatActivity {
     public void startTimerThread(int seconds){
         timerIsRunning = true;
         remainingSeconds = seconds;
-        passedSeconds = 0;
         textViewTimer.setText(TimeFormatController.createTimeText(remainingSeconds));
         timer = new Thread(){
             @Override
@@ -369,9 +369,11 @@ public class TimerActivity extends AppCompatActivity {
         buttonStopTimer.setVisibility(View.GONE);
         buttonAddFerryTime.setVisibility(View.GONE);
         buttonStartTimer.setVisibility(View.GONE);
-        timeAddedCounter = 0;
         setButtonInStoppedTimerState();
         saveDeliveryToDatabase();
+        ferrySeconds = 0;
+        passedSeconds = 0;
+        timeAddedCounter = 0;
     }
     public void showFerryPopupDialog(){
         // Create the dialog
@@ -432,7 +434,7 @@ public class TimerActivity extends AppCompatActivity {
 
     public void saveDeliveryToDatabase(){
         String date = SDF.format(new Date());
-        DataEntryModel dataEntryModel = new DataEntryModel(totalEstimatedSeconds, passedSeconds, date);
+        DataEntryModel dataEntryModel = new DataEntryModel(totalEstimatedSeconds, passedSeconds, date, ferrySeconds);
         databaseController.addDelivery(dataEntryModel);
     }
 }
