@@ -97,7 +97,6 @@ public class TimerActivity extends AppCompatActivity {
                         //Changing button to pause button
                         buttonStartTimer.setText(R.string.pause);
                         remainingSeconds = calculateDriveTimeInSeconds();
-                        //Initial start of timer
                         showDistanceToStartingCompanyDialog();
                     }
                 }
