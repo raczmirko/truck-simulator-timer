@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -144,6 +145,7 @@ public class DatabaseActivity extends AppCompatActivity {
         dialogBuilder.setPositiveButton("Yes", (dialog, which) -> {
             databaseController.deleteDelivery(record.getId());
             dialog.dismiss();
+            ToastController.showToastMessage(R.string.toast_delete_successful, getApplicationContext());
             //When deleting we hide the deleted card since it is not worth to load everything
             //From the DB again just to make the card disappear
             cardView.setVisibility(View.GONE);

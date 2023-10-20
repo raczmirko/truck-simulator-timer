@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -238,6 +239,7 @@ public class SettingsActivity extends AppCompatActivity {
         // Define OK button behavior
         dialogBuilder.setPositiveButton("Yes", (dialog, which) -> {
             databaseController.wipeDatabase();
+            ToastController.showToastMessage(R.string.toast_delete_successful, getApplicationContext());
             dialog.dismiss();
         });
         // Define OK button behavior

@@ -86,11 +86,11 @@ public class TimerActivity extends AppCompatActivity {
         buttonStartTimer.setOnClickListener(view -> {
             if(timerButtonState == TimerButtonState.STOPPED){
                 if(checkIfSomeInputsAreNotFilled()) {
-                    showToastMessage(R.string.toast_missing_input);
+                    ToastController.showToastMessage(R.string.toast_missing_input, getApplicationContext());
                 }
                 else {
                     if(areAllInputsAreZero()) {
-                        showToastMessage(R.string.toast_all_inputs_zero);
+                        ToastController.showToastMessage(R.string.toast_all_inputs_zero, getApplicationContext());
                     }
                     else {
                         changeUIWhenTimerRuns();
@@ -127,11 +127,11 @@ public class TimerActivity extends AppCompatActivity {
         buttonAddFerryTime.setOnClickListener(v -> showFerryPopupDialog());
         buttonCalculate.setOnClickListener(view -> {
             if(checkIfSomeInputsAreNotFilled()){
-                showToastMessage(R.string.toast_missing_input_calculate);
+                ToastController.showToastMessage(R.string.toast_missing_input_calculate, getApplicationContext());
             }
             else {
                 if(areAllInputsAreZero()) {
-                    showToastMessage(R.string.toast_all_inputs_zero);
+                    ToastController.showToastMessage(R.string.toast_all_inputs_zero, getApplicationContext());
                 }
                 else{
                     buttonSubtractFerryTime.setEnabled(true);
@@ -149,14 +149,6 @@ public class TimerActivity extends AppCompatActivity {
             setEstimatedTimeText(remainingSeconds);
             setETAText();
         });
-    }
-
-    private void showToastMessage(int textResource) {
-        Toast.makeText(
-                getApplicationContext(),
-                textResource,
-                Toast.LENGTH_LONG
-        ).show();
     }
 
     private boolean areAllInputsAreZero() {
@@ -223,7 +215,7 @@ public class TimerActivity extends AppCompatActivity {
             subtractFrom -= distanceInRealSeconds;
         }
         else{
-            showToastMessage(R.string.toast_negativ_value);
+            ToastController.showToastMessage(R.string.toast_negativ_value, getApplicationContext());
         }
         return subtractFrom;
     }
@@ -232,7 +224,7 @@ public class TimerActivity extends AppCompatActivity {
             remainingSeconds -= ferryMinutes * GAME_MINUTE_IN_REAL_SECONDS;
         }
         else{
-            showToastMessage(R.string.toast_negativ_value);
+            ToastController.showToastMessage(R.string.toast_negativ_value, getApplicationContext());
         }
     }
 
