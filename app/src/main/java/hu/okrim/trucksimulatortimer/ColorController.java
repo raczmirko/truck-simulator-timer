@@ -21,7 +21,7 @@ public class ColorController {
 
         double brighter = Math.max(luminance1, luminance2);
         double darker = Math.min(luminance1, luminance2);
-
+        //Adding 0.05 to avoid dividing by zero
         return (brighter + 0.05) / (darker + 0.05);
     }
 
@@ -29,7 +29,8 @@ public class ColorController {
         double red = Color.red(color) / 255.0;
         double green = Color.green(color) / 255.0;
         double blue = Color.blue(color) / 255.0;
-
+        /*Based on the formula specified in the Web Content Accessibility Guidelines (WCAG)
+        for calculating the relative luminance of a color.*/
         red = red <= 0.03928 ? red / 12.92 : Math.pow((red + 0.055) / 1.055, 2.4);
         green = green <= 0.03928 ? green / 12.92 : Math.pow((green + 0.055) / 1.055, 2.4);
         blue = blue <= 0.03928 ? blue / 12.92 : Math.pow((blue + 0.055) / 1.055, 2.4);
