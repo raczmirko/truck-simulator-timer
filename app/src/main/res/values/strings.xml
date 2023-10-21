@@ -69,4 +69,7 @@
     <string name="toast_negativ_value">This subtraction would result in a negative timer value!</string>
     <string name="toast_all_inputs_zero">All inputs cannot be zero!</string>
     <string name="toast_delete_successful">Deletion successful.</string>
+    <string name="statistics_precision">Average precision of all previous deliveries:</string>
+    <string name="statistics_delivery_amount">Number of deliveries timed:</string>
+    <string name="statistics_used_on_days">You have used the app on this many days:</string>
 </resources>

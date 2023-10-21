@@ -94,7 +94,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                         cursor.getInt(2),
                         cursor.getInt(3),
                         cursor.getDouble(4),
-                       cursor.getString(5)
+                       cursor.getString(6)
                 );
                 returnList.add(dataFetchModel);
             }while(cursor.moveToNext());
@@ -125,6 +125,57 @@ public class DatabaseController extends SQLiteOpenHelper {
         if(cursor.moveToFirst()){
             do{
                 result = cursor.getDouble(0);
+            }while(cursor.moveToNext());
+        }
+        //Close both cursor and connection.
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    public double calculateOverallEstimationPrecision(){
+        double result = 1.00;
+        String queryString = "SELECT AVG(COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME) FROM " + DELIVERIES_TABLE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(queryString, null);
+
+        if(cursor.moveToFirst()){
+            do{
+                result = cursor.getDouble(0);
+            }while(cursor.moveToNext());
+        }
+        //Close both cursor and connection.
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    public int countRecords(){
+        int result = 0;
+        String queryString = "SELECT COUNT(COLUMN_ID) FROM " + DELIVERIES_TABLE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(queryString, null);
+
+        if(cursor.moveToFirst()){
+            do{
+                result = cursor.getInt(0);
+            }while(cursor.moveToNext());
+        }
+        //Close both cursor and connection.
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    public int countDaysOfUse(){
+        int result = 0;
+        String queryString = "SELECT COUNT(DISTINCT SUBSTR(COLUMN_DATE, 1, 9)) FROM " + DELIVERIES_TABLE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(queryString, null);
+
+        if(cursor.moveToFirst()){
+            do{
+                result = cursor.getInt(0);
             }while(cursor.moveToNext());
         }
         //Close both cursor and connection.
