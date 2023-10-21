@@ -18,11 +18,11 @@ public class DataEntryModel {
     }
 
     private double calculateDifferencePercentage() {
-        if(estimatedActualDifference != 0 && estimatedTimeSeconds != 0){
+        if(actualTimeSeconds != 0 && estimatedTimeSeconds != 0){
             return (double)estimatedActualDifference / estimatedTimeSeconds;
         }
         else{
-            return 1;
+            return 0.0;
         }
 
     }
