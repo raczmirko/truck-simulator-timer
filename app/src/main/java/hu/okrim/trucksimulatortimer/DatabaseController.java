@@ -310,12 +310,12 @@ public class DatabaseController extends SQLiteOpenHelper {
         String queryStringCountRows = "SELECT COUNT(COLUMN_ID) FROM " + DELIVERIES_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryStringCountRows, null);
-        cursor.close();
         if(cursor.moveToFirst()){
             do{
                 numberOfRecords = cursor.getInt(0);
             }while(cursor.moveToNext());
         }
+        cursor.close();
         String queryStringMedian;
         if(numberOfRecords % 2 == 0){
             queryStringMedian = "SELECT SUBSTR(" + COLUMN_DATE + " , 12, 19)\n" +
