@@ -47,6 +47,9 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     public void setCardViewBackgroundColorForAllCards(CardView[] list){
+        //For each card we extract the Card and the two TextView elements
+        //Then we pass it as a list to the color formatter method
+        //To set the background color and text color if contrast is too low
         for (CardView cardView : list) {
             List<View> cardAndContentList = new ArrayList<>();
             cardAndContentList.add(cardView);
