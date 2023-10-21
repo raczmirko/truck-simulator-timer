@@ -11,7 +11,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -275,7 +274,7 @@ public class TimerActivity extends AppCompatActivity {
 
     double loadTacticMultiplierFromSharedPreferences(){
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-        return sharedPreferences.getFloat("estimationTacticValue", 1.0f);
+        return sharedPreferences.getFloat("estimationTacticValue", 0.3f);
     }
 
     String loadEstimationOperandFromSharedPreferences(){
@@ -286,17 +285,36 @@ public class TimerActivity extends AppCompatActivity {
 
     private int multiplyRealDriveTimeSecondsWithAverageDifferencePercentage(int realDriveTimeSeconds) {
         double differencePercentage = databaseController.calculateExtraSecondsByPastDeliveryTimes(realDriveTimeSeconds, ferrySeconds);
+        double differencePercentageFromMedian = databaseController.calculateExtraSecondsByPastDeliveryTimesMedian(realDriveTimeSeconds, ferrySeconds);
         double threshold = loadTacticMultiplierFromSharedPreferences();
-        if(differencePercentage < 0){
-            //If the percentage is smaller than -30 then change it to -30
-                if(differencePercentage < (threshold * -1)){differencePercentage = threshold * -1;}
-            realDriveTimeSeconds += (int)Math.ceil((realDriveTimeSeconds * differencePercentage)*(-1));
+        String estimationOperand = loadEstimationOperandFromSharedPreferences();
+        switch(estimationOperand){
+            case "Average":
+                if(differencePercentage < 0){
+                    //If the percentage is smaller than -30 then change it to -30
+                    if(differencePercentage < (threshold * -1)){differencePercentage = threshold * -1;}
+                    realDriveTimeSeconds += (int)Math.ceil((realDriveTimeSeconds * differencePercentage)*(-1));
+                }
+                else {
+                    //If the percentage is more than 30 then change it to 30
+                    if(differencePercentage > threshold){differencePercentage = threshold;}
+                    realDriveTimeSeconds -= (int)Math.ceil(realDriveTimeSeconds * differencePercentage);
+                }
+                break;
+            case "Median":
+                if(differencePercentageFromMedian < 0){
+                    //If the percentage is smaller than -30 then change it to -30
+                    if(differencePercentageFromMedian < (threshold * -1)){differencePercentageFromMedian = threshold * -1;}
+                    realDriveTimeSeconds += (int)Math.ceil((realDriveTimeSeconds * differencePercentageFromMedian)*(-1));
+                }
+                else {
+                    //If the percentage is more than 30 then change it to 30
+                    if(differencePercentageFromMedian > threshold){differencePercentageFromMedian = threshold;}
+                    realDriveTimeSeconds -= (int)Math.ceil(realDriveTimeSeconds * differencePercentageFromMedian);
+                }
+                break;
         }
-        else {
-            //If the percentage is more than 30 then change it to 30
-            if(differencePercentage > threshold){differencePercentage = threshold;}
-            realDriveTimeSeconds -= (int)Math.ceil(realDriveTimeSeconds * differencePercentage);
-        }
+
         return realDriveTimeSeconds;
     }
 

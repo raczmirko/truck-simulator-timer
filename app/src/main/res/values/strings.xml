@@ -80,4 +80,6 @@
     <string name="help_estimation_operand">When the error rate is calculated from the previous delivery data one can either choose to calculate this by average or median. For more precision use median.</string>
     <string name="average">Average</string>
     <string name="median">Median</string>
+    <string name="what_is_this">What is this?</string>
+    <string name="help_statistics_precision">This indicates the precision of the previous estimations made for drive times. There are 3 categories:\n\nNegative numbers: usually arrived this % slower than estimated\n\nZero: always arrived on time\n\nPositive numbers: usually arrived this % faster than estimated</string>
 </resources>

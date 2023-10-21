@@ -74,7 +74,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:padding="10dp">
 
                     <TextView
@@ -95,7 +95,20 @@
                         android:text="TextView"
                         android:textColor="@color/black"
                         android:textSize="48sp" />
+
+                    <Button
+                        android:id="@+id/buttonAveragePrecisionHelp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@android:color/holo_orange_dark"
+                        android:text="@string/what_is_this"
+                        android:textColor="@color/white"
+                        app:cornerRadius="10dp" />
+
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -131,6 +144,7 @@
                         android:textColor="@color/black"
                         android:textSize="48sp" />
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
