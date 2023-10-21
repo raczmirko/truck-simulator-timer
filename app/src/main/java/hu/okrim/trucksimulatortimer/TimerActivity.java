@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -279,7 +280,7 @@ public class TimerActivity extends AppCompatActivity {
 
     String loadEstimationOperandFromSharedPreferences(){
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-        String estimationOperand = sharedPreferences.getString("estimationOperand", "none");
+        String estimationOperand = sharedPreferences.getString("estimationOperand", "Average");
         return estimationOperand;
     }
 
@@ -288,6 +289,7 @@ public class TimerActivity extends AppCompatActivity {
         double differencePercentageFromMedian = databaseController.calculateExtraSecondsByPastDeliveryTimesMedian(realDriveTimeSeconds, ferrySeconds);
         double threshold = loadTacticMultiplierFromSharedPreferences();
         String estimationOperand = loadEstimationOperandFromSharedPreferences();
+        Log.d("differencePercentageFromMedian", String.valueOf(differencePercentageFromMedian));
         switch(estimationOperand){
             case "Average":
                 if(differencePercentage < 0){
@@ -301,6 +303,7 @@ public class TimerActivity extends AppCompatActivity {
                     realDriveTimeSeconds -= (int)Math.ceil(realDriveTimeSeconds * differencePercentage);
                 }
                 break;
+
             case "Median":
                 if(differencePercentageFromMedian < 0){
                     //If the percentage is smaller than -30 then change it to -30

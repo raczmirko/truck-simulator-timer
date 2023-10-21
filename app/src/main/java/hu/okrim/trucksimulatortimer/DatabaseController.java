@@ -148,31 +148,33 @@ public class DatabaseController extends SQLiteOpenHelper {
         cursor.close();
         String queryString;
         if (numberOfRecords % 2 == 1) {
-            queryString = String.format(Locale.US, "SELECT COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME " +
-                            "FROM (SELECT COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME FROM %s " +
-                            "WHERE COLUMN_ESTIMATED_TIME_SECONDS >= %f AND " +
-                            "COLUMN_ESTIMATED_TIME_SECONDS <= %f AND COLUMN_FERRY_TIME >= %f AND " +
-                            "COLUMN_FERRY_TIME <= %f " +
-                            "ORDER BY COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME ASC " +
-                            "LIMIT 1 OFFSET (SELECT (COUNT(COLUMN_ID) - 1) / 2 FROM %s))",
+            queryString = String.format(Locale.US,
+                              "SELECT COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME FROM %s\n" +
+                              "WHERE COLUMN_ESTIMATED_TIME_SECONDS >= %f AND\n" +
+                              "COLUMN_ESTIMATED_TIME_SECONDS <= %f AND COLUMN_FERRY_TIME >= %f AND\n" +
+                              "COLUMN_FERRY_TIME <= %f\n" +
+                              "ORDER BY COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME ASC\n" +
+                              "LIMIT 1 OFFSET (SELECT (COUNT(COLUMN_ID) - 1) / 2 FROM DELIVERIES_TABLE)",
                     DELIVERIES_TABLE, seconds * lowerBound, seconds * upperBound,
-                    ferrySeconds * lowerBound, ferrySeconds * upperBound, DELIVERIES_TABLE);
-            Log.d("queryString", queryString);
-        } else {
-            queryString = String.format(Locale.US, "SELECT COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME FROM %s " +
-                            "WHERE COLUMN_ESTIMATED_TIME_SECONDS >= %f AND " +
-                            "COLUMN_ESTIMATED_TIME_SECONDS <= %f AND COLUMN_FERRY_TIME >= %f AND " +
-                            "COLUMN_FERRY_TIME <= %f " +
-                            "ORDER BY COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME ASC " +
-                            "LIMIT 1 OFFSET (SELECT (COUNT(COLUMN_ID) - 1) FROM %s)",
+                    ferrySeconds * lowerBound, ferrySeconds * upperBound);
+        }
+        else {
+            queryString = String.format(Locale.US,
+                    "WITH X AS(\n" +
+                                "SELECT COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME FROM %s\n" +
+                                "WHERE COLUMN_ESTIMATED_TIME_SECONDS >= %f AND\n" +
+                                "COLUMN_ESTIMATED_TIME_SECONDS <= %f AND COLUMN_FERRY_TIME >= %f AND\n" +
+                                "COLUMN_FERRY_TIME <= %f\n" +
+                                "ORDER BY COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME ASC\n" +
+                                "LIMIT 2 OFFSET (SELECT (COUNT(COLUMN_ID) - 1) / 2 FROM DELIVERIES_TABLE))\n" +
+                        "SELECT AVG(COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME)\n" +
+                        "FROM X",
                     DELIVERIES_TABLE, seconds * lowerBound, seconds * upperBound,
-                    ferrySeconds * lowerBound, ferrySeconds * upperBound, DELIVERIES_TABLE);
-            Log.d("queryString", queryString);
+                    ferrySeconds * lowerBound, ferrySeconds * upperBound);
         }
         cursor = db.rawQuery(queryString, null);
         if (cursor.moveToFirst()) {
             result = cursor.getDouble(0);
-            Log.d("result", String.valueOf(result));
         }
         //Close both cursor and connection.
         cursor.close();
@@ -308,6 +310,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         String queryStringCountRows = "SELECT COUNT(COLUMN_ID) FROM " + DELIVERIES_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryStringCountRows, null);
+        cursor.close();
         if(cursor.moveToFirst()){
             do{
                 numberOfRecords = cursor.getInt(0);
