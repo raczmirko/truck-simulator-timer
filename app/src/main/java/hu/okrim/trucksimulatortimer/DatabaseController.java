@@ -150,6 +150,45 @@ public class DatabaseController extends SQLiteOpenHelper {
         return result;
     }
 
+    public double calculateOverallEstimationPrecisionByMedian(){
+        double result = 0.00;
+        int numberOfRecords = 0;
+        String queryStringCountRows = "SELECT COUNT(COLUMN_ID) FROM " + DELIVERIES_TABLE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(queryStringCountRows, null);
+        if(cursor.moveToFirst()){
+            do{
+                numberOfRecords = cursor.getInt(0);
+            }while(cursor.moveToNext());
+        }
+        String queryStringMedian;
+        if(numberOfRecords % 2 == 1){
+            queryStringMedian = "SELECT " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME + "\n" +
+                    "FROM (SELECT " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME + "\n" +
+                    "FROM " + DELIVERIES_TABLE + "\n" +
+                    "ORDER BY " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME + "\n" +
+                    "LIMIT 1\n" +
+                    "OFFSET (SELECT (COUNT(*) - 1) / 2\n" +
+                    "FROM " + DELIVERIES_TABLE + "))";
+        }
+        else {
+            queryStringMedian = "SELECT " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME + "\n" +
+                    "FROM " + DELIVERIES_TABLE + "\n" +
+                    "ORDER BY " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME + "\n" +
+                    "LIMIT 1 OFFSET (SELECT COUNT(*) / 2 FROM " + DELIVERIES_TABLE + ")";
+        }
+        cursor = db.rawQuery(queryStringMedian, null);
+        if(cursor.moveToFirst()){
+            do{
+                result = cursor.getFloat(0);
+            }while(cursor.moveToNext());
+        }
+        //Close both cursor and connection.
+        cursor.close();
+        db.close();
+        return result;
+    }
+
     public int countRecords(){
         int result = 0;
         String queryString = "SELECT COUNT(COLUMN_ID) FROM " + DELIVERIES_TABLE;
@@ -233,7 +272,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                                 "FROM " + DELIVERIES_TABLE + "))";
         }
         else {
-            queryStringMedian = "SELECT " + COLUMN_DATE + "\n" +
+            queryStringMedian = "SELECT SUBSTR(" + COLUMN_DATE + " , 12, 19)\n" +
                                 "FROM " + DELIVERIES_TABLE + "\n" +
                                 "ORDER BY " + COLUMN_DATE + "\n" +
                                 "LIMIT 1 OFFSET (SELECT COUNT(*) / 2 FROM " + DELIVERIES_TABLE + ")";

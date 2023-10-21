@@ -70,9 +70,14 @@
     <string name="toast_all_inputs_zero">All inputs cannot be zero!</string>
     <string name="toast_delete_successful">Deletion successful.</string>
     <string name="statistics_precision">Average precision of all previous deliveries:</string>
+    <string name="statistics_precision_median">Median of all previous delivery precisions:</string>
     <string name="statistics_delivery_amount">Number of deliveries timed:</string>
     <string name="statistics_used_on_days">You have used the timer on this many days:</string>
     <string name="statistics_average_drive_per_day">Average drive time per day:</string>
     <string name="statistics_total_drive_time">Total drive time:</string>
     <string name="statistics_date_median">You usually play around this time (median):</string>
+    <string name="estimation_operand">Set error estimation operand:</string>
+    <string name="help_estimation_operand">When the error rate is calculated from the previous delivery data one can either choose to calculate this by average or median. For more precision use median.</string>
+    <string name="average">Average</string>
+    <string name="median">Median</string>
 </resources>

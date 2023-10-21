@@ -276,6 +276,67 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewMedianOrAverage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="#009688"
+                app:cardCornerRadius="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/textViewSettingsMedianOrAverage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:text="@string/estimation_operand"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSettingsAverage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hapticFeedbackEnabled="true"
+                            android:text="@string/average"
+                            android:textColor="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSettingsMedian"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:hapticFeedbackEnabled="true"
+                            android:text="@string/median"
+                            android:textColor="@color/black" />
+
+                    </RadioGroup>
+
+                    <Button
+                        android:id="@+id/buttonSettingsHelpEstimationOperand"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/holo_orange_dark"
+                        android:text="@string/explain"
+                        android:textColor="@color/white"
+                        app:cornerRadius="5dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewWipeDatabase"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

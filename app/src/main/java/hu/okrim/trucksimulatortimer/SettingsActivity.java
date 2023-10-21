@@ -19,8 +19,8 @@ public class SettingsActivity extends AppCompatActivity {
     RadioButton radioButtonOptimistic, radioButtonRealistic, radioButtonPessimistic,
             radioButtonPlusMinus10, radioButtonPlusMinus20, radioButtonPlusMinus30,
             radioButtonExpectedError5, radioButtonExpectedError10, radioButtonExpectedError20,
-            radioButtonExpectedError30;
-    Button buttonHelpEstimation, buttonHelpSampling, buttonHelpExpectedError, buttonWipeDB;
+            radioButtonExpectedError30, radioButtonMedian, radioButtonAverage;
+    Button buttonHelpEstimation, buttonHelpSampling, buttonHelpExpectedError, buttonWipeDB, buttonEstimationOperand;
     DatabaseController databaseController = new DatabaseController(SettingsActivity.this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
         String estimationStrategy = sharedPreferences.getString("estimationTactic", "none");
         String samplingStrategy = sharedPreferences.getString("samplingStrategy", "none");
         String expectedErrorPercent = sharedPreferences.getString("expectedErrorPercentText", "none");
+        String estimationOperand = sharedPreferences.getString("estimationOperand", "none");
         switch (estimationStrategy) {
             case "optimistic":
                 radioButtonOptimistic.setChecked(true);
@@ -70,6 +71,14 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
             case "30":
                 radioButtonExpectedError30.setChecked(true);
+                break;
+        }
+        switch (estimationOperand){
+            case "Average":
+                radioButtonAverage.setChecked(true);
+                break;
+            case "Median":
+                radioButtonMedian.setChecked(true);
                 break;
         }
     }
@@ -177,10 +186,29 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
+        radioButtonAverage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    editor.putString("estimationOperand", "Average");
+                    editor.apply();
+                }
+            }
+        });
+        radioButtonMedian.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    editor.putString("estimationOperand", "Median");
+                    editor.apply();
+                }
+            }
+        });
         buttonHelpSampling.setOnClickListener(view -> showHelpDialog(R.string.help_sampling));
         buttonHelpEstimation.setOnClickListener(view -> showHelpDialog(R.string.help_estimation));
         buttonHelpExpectedError.setOnClickListener(view -> showHelpDialog(R.string.help_estimation));
         buttonWipeDB.setOnClickListener(view -> showConfirmationDialog(R.string.help_expected_error));
+        buttonEstimationOperand.setOnClickListener(view -> showHelpDialog(R.string.help_estimation_operand));
     }
 
     private void initComoponents() {
@@ -194,10 +222,13 @@ public class SettingsActivity extends AppCompatActivity {
         radioButtonExpectedError10 = findViewById(R.id.radioButtonSettingsExpectedError10);
         radioButtonExpectedError20 = findViewById(R.id.radioButtonSettingsExpectedError20);
         radioButtonExpectedError30 = findViewById(R.id.radioButtonSettingsExpectedError30);
+        radioButtonAverage = findViewById(R.id.radioButtonSettingsAverage);
+        radioButtonMedian = findViewById(R.id.radioButtonSettingsMedian);
         buttonHelpSampling = findViewById(R.id.buttonSettingsHelpSampling);
         buttonHelpEstimation = findViewById(R.id.buttonSettingsHelpEstimation);
         buttonHelpExpectedError = findViewById(R.id.buttonSettingsHelpExpectedError);
         buttonWipeDB = findViewById(R.id.buttonWipeDB);
+        buttonEstimationOperand = findViewById(R.id.buttonSettingsHelpEstimationOperand);
     }
 
     public void showHelpDialog(int textReference){

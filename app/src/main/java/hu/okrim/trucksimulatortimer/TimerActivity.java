@@ -278,6 +278,12 @@ public class TimerActivity extends AppCompatActivity {
         return sharedPreferences.getFloat("estimationTacticValue", 1.0f);
     }
 
+    String loadEstimationOperandFromSharedPreferences(){
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        String estimationOperand = sharedPreferences.getString("estimationOperand", "none");
+        return estimationOperand;
+    }
+
     private int multiplyRealDriveTimeSecondsWithAverageDifferencePercentage(int realDriveTimeSeconds) {
         double differencePercentage = databaseController.calculateExtraSecondsByPastDeliveryTimes(realDriveTimeSeconds, ferrySeconds);
         double threshold = loadTacticMultiplierFromSharedPreferences();
