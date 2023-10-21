@@ -119,7 +119,7 @@ public class DatabaseActivity extends AppCompatActivity {
     private String createFormattedTextFromDataFetchModel(DataFetchModel model) {
         StringBuilder stringBuilder = new StringBuilder();
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        String formattedErrorRate = decimalFormat.format(model.getDifferencePercentageOfTotalTime() * 100);
+        String formattedErrorRate = decimalFormat.format((1 - model.getDifferencePercentageOfTotalTime()) * 100);
         stringBuilder.append(String.format(Locale.US, "Estimated time: %s \n", TimeFormatController.createTimeText(model.getEstimatedTimeSeconds())));
         stringBuilder.append(String.format(Locale.US, "Actual time: %s \n", TimeFormatController.createTimeText(model.getActualTimeSeconds())));
         stringBuilder.append(String.format(Locale.US, "Error rate: %s%% \n", formattedErrorRate));
