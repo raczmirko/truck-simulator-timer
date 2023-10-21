@@ -197,44 +197,49 @@ public class DatabaseController extends SQLiteOpenHelper {
         return result;
     }
 
-    public double calculateOverallEstimationPrecisionByMedian(){
+    public double calculateOverallEstimationPrecisionByMedian() {
         double result = 0.00;
         int numberOfRecords = 0;
+
+        // Count the number of records
         String queryStringCountRows = "SELECT COUNT(COLUMN_ID) FROM " + DELIVERIES_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryStringCountRows, null);
-        if(cursor.moveToFirst()){
-            do{
-                numberOfRecords = cursor.getInt(0);
-            }while(cursor.moveToNext());
+
+        if (cursor.moveToFirst()) {
+            numberOfRecords = cursor.getInt(0);
         }
+
+        cursor.close();
+
         String queryStringMedian;
-        if(numberOfRecords % 2 == 1){
-            queryStringMedian = "SELECT " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME + "\n" +
-                    "FROM (SELECT " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME + "\n" +
-                    "FROM " + DELIVERIES_TABLE + "\n" +
-                    "ORDER BY " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME + "\n" +
-                    "LIMIT 1\n" +
-                    "OFFSET (SELECT (COUNT(*) - 1) / 2\n" +
-                    "FROM " + DELIVERIES_TABLE + "))";
+
+        // Determine the SQL query based on the number of records
+        if (numberOfRecords % 2 == 1) {
+            queryStringMedian = "SELECT " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME +
+                    " FROM " + DELIVERIES_TABLE +
+                    " ORDER BY " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME +
+                    " LIMIT 1 OFFSET (SELECT (COUNT(*) - 1) / 2 FROM " + DELIVERIES_TABLE + ")";
+        } else {
+            queryStringMedian = "SELECT " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME +
+                    " FROM " + DELIVERIES_TABLE +
+                    " ORDER BY " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME +
+                    " LIMIT 1 OFFSET (SELECT COUNT(*) / 2 FROM " + DELIVERIES_TABLE + ")";
         }
-        else {
-            queryStringMedian = "SELECT " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME + "\n" +
-                    "FROM " + DELIVERIES_TABLE + "\n" +
-                    "ORDER BY " + COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME + "\n" +
-                    "LIMIT 1 OFFSET (SELECT COUNT(*) / 2 FROM " + DELIVERIES_TABLE + ")";
-        }
+
+        // Retrieve the median directly
         cursor = db.rawQuery(queryStringMedian, null);
-        if(cursor.moveToFirst()){
-            do{
-                result = cursor.getFloat(0);
-            }while(cursor.moveToNext());
+
+        if (cursor.moveToFirst()) {
+            result = cursor.getFloat(0);
         }
-        //Close both cursor and connection.
+
         cursor.close();
         db.close();
+
         return result;
     }
+
 
     public int countRecords(){
         int result = 0;
