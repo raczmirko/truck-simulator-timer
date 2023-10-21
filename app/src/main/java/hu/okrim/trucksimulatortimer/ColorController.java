@@ -47,17 +47,14 @@ public class ColorController {
         List<String> colorList = new ArrayList<>(Arrays.asList(staticColorArray));
         for(List<View> card: cardList){
             int randomIndex = (int)(Math.random() * (colorList.size()));
-            Log.d("randomIndex", String.valueOf(randomIndex));
             CardView cardView = (CardView)card.get(0);
             cardView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(colorList.get(randomIndex))));
             int color1 = Color.parseColor(colorList.get(randomIndex));
             int color2 = Color.BLACK;
             double contrastRatio = getContrastRatio(color1,color2);
-            Log.d("contrast", String.valueOf(contrastRatio));
             if (contrastRatio < minimumContrastRatio) {
                 TextView textView1 = (TextView) card.get(1);
                 TextView textView2 = (TextView) card.get(2);
-                Log.d("textView1", String.valueOf(textView1));
                 textView1.setTextColor(Color.WHITE);
                 textView2.setTextColor(Color.WHITE);
             }
