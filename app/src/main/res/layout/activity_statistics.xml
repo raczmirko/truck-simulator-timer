@@ -83,7 +83,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="serif"
-                        android:text="@string/statistics_precision"
+                        android:text="@string/statistics_error_rate"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 

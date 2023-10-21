@@ -19,9 +19,9 @@ import java.util.List;
 public class StatisticsActivity extends AppCompatActivity {
     Button buttonAveragePrecisionHelp;
     DatabaseController databaseController = new DatabaseController(StatisticsActivity.this);
-    TextView averagePrecision, deliveryNumber, daysOfUse, averageDrivePerDay, totalDriveTimeSeconds, dateMedian,
+    TextView averageError, deliveryNumber, daysOfUse, averageDrivePerDay, totalDriveTimeSeconds, dateMedian,
             precisionMedian;
-    CardView cardViewAveragePrecision, cardViewDeliveryNumber, cardViewDaysOfUse,
+    CardView cardViewAverageError, cardViewDeliveryNumber, cardViewDaysOfUse,
             cardViewAverageDrivePerDay, cardViewTotalDriveTime, cardViewDateMedian, cardViewPrecisionMedian;
     List<List<View>> cardsAndText = new ArrayList<>();
     @Override
@@ -34,17 +34,17 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private void setStatistics() {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        averagePrecision.setText(decimalFormat.format((databaseController.calculateOverallEstimationPrecision()) * 100).concat("%"));
+        averageError.setText(decimalFormat.format(databaseController.calculateOverallEstimationPrecision() * 100).concat("%"));
         deliveryNumber.setText(String.valueOf(databaseController.countRecords()));
         daysOfUse.setText(String.valueOf(databaseController.countDaysOfUse()));
         averageDrivePerDay.setText(TimeFormatController.createTimeText(databaseController.getAverageDriveTimePerDayInSeconds()));
         totalDriveTimeSeconds.setText(TimeFormatController.createTimeText(databaseController.getTotalDriveTime()));
         dateMedian.setText(databaseController.getMedianOfDriveDate());
-        precisionMedian.setText(decimalFormat.format((databaseController.calculateOverallEstimationPrecisionByMedian()) * 100).concat("%"));
+        precisionMedian.setText(decimalFormat.format(databaseController.calculateOverallEstimationPrecisionByMedian() * 100).concat("%"));
     }
 
     private void initComponents() {
-        averagePrecision = findViewById(R.id.textViewOverallPrecisionValue);
+        averageError = findViewById(R.id.textViewOverallPrecisionValue);
         deliveryNumber = findViewById(R.id.textViewDeliveryNumber);
         daysOfUse = findViewById(R.id.textViewDaysOfUse);
         averageDrivePerDay = findViewById(R.id.textViewAverageDrivePerDay);
@@ -56,14 +56,14 @@ public class StatisticsActivity extends AppCompatActivity {
 
         cardViewDeliveryNumber = findViewById(R.id.cardViewDeliveryNumber);
         cardViewDaysOfUse = findViewById(R.id.cardViewDaysOfUse);
-        cardViewAveragePrecision = findViewById(R.id.cardViewAveragePrecision);
+        cardViewAverageError = findViewById(R.id.cardViewAveragePrecision);
         cardViewAverageDrivePerDay = findViewById(R.id.cardViewAverageDrivePerDay);
         cardViewTotalDriveTime  = findViewById(R.id.cardViewTotalDriveTime);
         cardViewDateMedian = findViewById(R.id.cardViewDateMedian);
         cardViewPrecisionMedian = findViewById(R.id.cardViewPrecisionMedian);
         //Color all cards with a different background
         CardView[] cardViews = {cardViewDeliveryNumber, cardViewDaysOfUse,
-                cardViewAveragePrecision, cardViewAverageDrivePerDay,
+                cardViewAverageError, cardViewAverageDrivePerDay,
                 cardViewTotalDriveTime, cardViewDateMedian, cardViewPrecisionMedian};
         setCardViewBackgroundColorForAllCards(cardViews);
     }

@@ -69,7 +69,7 @@
     <string name="toast_negativ_value">This subtraction would result in a negative timer value!</string>
     <string name="toast_all_inputs_zero">All inputs cannot be zero!</string>
     <string name="toast_delete_successful">Deletion successful.</string>
-    <string name="statistics_precision">Average precision of all previous deliveries:</string>
+    <string name="statistics_error_rate">Average error of all previous deliveries:</string>
     <string name="statistics_precision_median">Median of all previous delivery precisions:</string>
     <string name="statistics_delivery_amount">Number of deliveries timed:</string>
     <string name="statistics_used_on_days">You have used the timer on this many days:</string>
@@ -81,5 +81,5 @@
     <string name="average">Average</string>
     <string name="median">Median</string>
     <string name="what_is_this">What is this?</string>
-    <string name="help_statistics_precision">This indicates the precision of the previous estimations made for drive times. There are 3 categories:\n\nNegative numbers: usually arrived this % slower than estimated\n\nZero: always arrived on time\n\nPositive numbers: usually arrived this % faster than estimated</string>
+    <string name="help_statistics_precision">This number indicates the amount of error in the past drive time estimations. There are 3 categories:\n\nNegative numbers: usually arrived this % slower than estimated\n\nZero: always arrived on time\n\nPositive numbers: usually arrived this % faster than estimated</string>
 </resources>
