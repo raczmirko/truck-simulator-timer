@@ -169,7 +169,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     public int countDaysOfUse(){
         int result = 0;
-        String queryString = "SELECT COUNT(DISTINCT SUBSTR(COLUMN_DATE, 1, 9)) FROM " + DELIVERIES_TABLE;
+        String queryString = "SELECT COUNT(DISTINCT SUBSTR(COLUMN_DATE, 1, 10)) FROM " + DELIVERIES_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);
 
@@ -187,5 +187,82 @@ public class DatabaseController extends SQLiteOpenHelper {
     public double getSampleBound(){
         SharedPreferences sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         return sharedPreferences.getFloat("samplingStrategyValue", 0.0f);
+    }
+
+    public int getAverageDriveTimePerDayInSeconds(){
+        int result = 0;
+        String queryString =
+            "WITH X AS(" +
+                "SELECT SUM(COLUMN_ACTUAL_TIME_SECONDS) AS total_seconds, " +
+                "SUBSTR(COLUMN_DATE, 1, 10) as date " +
+                "FROM " + DELIVERIES_TABLE + " " +
+                "GROUP BY SUBSTR(COLUMN_DATE, 1, 10)) " +
+            "SELECT AVG(total_seconds) FROM X";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(queryString, null);
+        if(cursor.moveToFirst()){
+            do{
+                result = cursor.getInt(0);
+            }while(cursor.moveToNext());
+        }
+        //Close both cursor and connection.
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    public String getMedianOfDriveDate(){
+        String result = "";
+        int numberOfRecords = 0;
+        String queryStringCountRows = "SELECT COUNT(COLUMN_ID) FROM " + DELIVERIES_TABLE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(queryStringCountRows, null);
+        if(cursor.moveToFirst()){
+            do{
+                numberOfRecords = cursor.getInt(0);
+            }while(cursor.moveToNext());
+        }
+        String queryStringMedian;
+        if(numberOfRecords % 2 == 0){
+            queryStringMedian = "SELECT SUBSTR(" + COLUMN_DATE + " , 12, 19)\n" +
+                                "FROM (SELECT " + COLUMN_DATE + "\n" +
+                                "FROM " + DELIVERIES_TABLE + "\n" +
+                                "ORDER BY SUBSTR(" + COLUMN_DATE + " , 12, 19)\n" +
+                                "LIMIT 2\n" +
+                                "OFFSET (SELECT (COUNT(*) - 1) / 2\n" +
+                                "FROM " + DELIVERIES_TABLE + "))";
+        }
+        else {
+            queryStringMedian = "SELECT " + COLUMN_DATE + "\n" +
+                                "FROM " + DELIVERIES_TABLE + "\n" +
+                                "ORDER BY " + COLUMN_DATE + "\n" +
+                                "LIMIT 1 OFFSET (SELECT COUNT(*) / 2 FROM " + DELIVERIES_TABLE + ")";
+        }
+        cursor = db.rawQuery(queryStringMedian, null);
+        if(cursor.moveToFirst()){
+            do{
+                result = cursor.getString(0);
+            }while(cursor.moveToNext());
+        }
+        //Close both cursor and connection.
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    public int getTotalDriveTime(){
+        int result = 0;
+        String queryString = "SELECT SUM(COLUMN_ACTUAL_TIME_SECONDS) FROM " + DELIVERIES_TABLE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(queryString, null);
+        if(cursor.moveToFirst()){
+            do{
+                result = cursor.getInt(0);
+            }while(cursor.moveToNext());
+        }
+        //Close both cursor and connection.
+        cursor.close();
+        db.close();
+        return result;
     }
 }

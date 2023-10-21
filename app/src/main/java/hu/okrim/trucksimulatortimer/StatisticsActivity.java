@@ -16,8 +16,9 @@ import java.util.List;
 
 public class StatisticsActivity extends AppCompatActivity {
     DatabaseController databaseController = new DatabaseController(StatisticsActivity.this);
-    TextView averagePrecision, deliveryNumber, daysOfUse;
-    CardView cardViewAveragePrecision, cardViewDeliveryNumber, cardViewDaysOfUse;
+    TextView averagePrecision, deliveryNumber, daysOfUse, averageDrivePerDay, totalDriveTimeSeconds, dateMedian;
+    CardView cardViewAveragePrecision, cardViewDeliveryNumber, cardViewDaysOfUse,
+            cardViewAverageDrivePerDay, cardViewTotalDriveTime, cardViewDateMedian;
     List<List<View>> cardsAndText = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +33,29 @@ public class StatisticsActivity extends AppCompatActivity {
         averagePrecision.setText(decimalFormat.format(databaseController.calculateOverallEstimationPrecision() * 100));
         deliveryNumber.setText(String.valueOf(databaseController.countRecords()));
         daysOfUse.setText(String.valueOf(databaseController.countDaysOfUse()));
+        averageDrivePerDay.setText(TimeFormatController.createTimeText(databaseController.getAverageDriveTimePerDayInSeconds()));
+        totalDriveTimeSeconds.setText(TimeFormatController.createTimeText(databaseController.getTotalDriveTime()));
+        dateMedian.setText(databaseController.getMedianOfDriveDate());
     }
 
     private void initComponents() {
         averagePrecision = findViewById(R.id.textViewOverallPrecisionValue);
         deliveryNumber = findViewById(R.id.textViewDeliveryNumber);
         daysOfUse = findViewById(R.id.textViewDaysOfUse);
+        averageDrivePerDay = findViewById(R.id.textViewAverageDrivePerDay);
+        totalDriveTimeSeconds = findViewById(R.id.textViewTotalDriveTime);
+        dateMedian = findViewById(R.id.textViewDateMedian);
+
         cardViewDeliveryNumber = findViewById(R.id.cardViewDeliveryNumber);
         cardViewDaysOfUse = findViewById(R.id.cardViewDaysOfUse);
         cardViewAveragePrecision = findViewById(R.id.cardViewAveragePrecision);
+        cardViewAverageDrivePerDay = findViewById(R.id.cardViewAverageDrivePerDay);
+        cardViewTotalDriveTime  = findViewById(R.id.cardViewTotalDriveTime);
+        cardViewDateMedian = findViewById(R.id.cardViewDateMedian);
         //Color all cards with a different background
-        CardView[] cardViews = {cardViewDeliveryNumber, cardViewDaysOfUse, cardViewAveragePrecision};
+        CardView[] cardViews = {cardViewDeliveryNumber, cardViewDaysOfUse,
+                cardViewAveragePrecision, cardViewAverageDrivePerDay,
+                cardViewTotalDriveTime, cardViewDateMedian};
         setCardViewBackgroundColorForAllCards(cardViews);
     }
 
