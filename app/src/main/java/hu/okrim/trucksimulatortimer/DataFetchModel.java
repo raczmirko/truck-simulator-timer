@@ -64,16 +64,4 @@ public class DataFetchModel {
     public void setEstimatedActualDifference(int estimatedActualDifference) {
         this.estimatedActualDifference = estimatedActualDifference;
     }
-
-    @Override
-    public String toString() {
-        return "DataFetchModel{" +
-                "id=" + id +
-                ", estimatedTimeSeconds=" + estimatedTimeSeconds +
-                ", actualTimeSeconds=" + actualTimeSeconds +
-                ", estimatedActualDifference=" + estimatedActualDifference +
-                ", differencePercentageOfTotalTime=" + differencePercentageOfTotalTime +
-                ", dateString='" + dateString + '\'' +
-                '}';
-    }
 }
