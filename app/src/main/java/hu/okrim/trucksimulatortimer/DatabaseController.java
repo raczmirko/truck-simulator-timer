@@ -133,6 +133,53 @@ public class DatabaseController extends SQLiteOpenHelper {
         return result;
     }
 
+    public double calculateExtraSecondsByPastDeliveryTimesMedian(int seconds, int ferrySeconds){
+        double result = 0;
+        double boundRadius = getSampleBound();
+        double lowerBound = 1 - boundRadius;
+        double upperBound = 1 + boundRadius;
+        int numberOfRecords = 0;
+        String queryStringCountRows = "SELECT COUNT(COLUMN_ID) FROM " + DELIVERIES_TABLE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(queryStringCountRows, null);
+        if (cursor.moveToFirst()) {
+            numberOfRecords = cursor.getInt(0);
+        }
+        cursor.close();
+        String queryString;
+        if (numberOfRecords % 2 == 1) {
+            queryString = String.format(Locale.US, "SELECT COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME " +
+                            "FROM (SELECT COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME FROM %s " +
+                            "WHERE COLUMN_ESTIMATED_TIME_SECONDS >= %f AND " +
+                            "COLUMN_ESTIMATED_TIME_SECONDS <= %f AND COLUMN_FERRY_TIME >= %f AND " +
+                            "COLUMN_FERRY_TIME <= %f " +
+                            "ORDER BY COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME ASC " +
+                            "LIMIT 1 OFFSET (SELECT (COUNT(COLUMN_ID) - 1) / 2 FROM %s))",
+                    DELIVERIES_TABLE, seconds * lowerBound, seconds * upperBound,
+                    ferrySeconds * lowerBound, ferrySeconds * upperBound, DELIVERIES_TABLE);
+            Log.d("queryString", queryString);
+        } else {
+            queryString = String.format(Locale.US, "SELECT COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME FROM %s " +
+                            "WHERE COLUMN_ESTIMATED_TIME_SECONDS >= %f AND " +
+                            "COLUMN_ESTIMATED_TIME_SECONDS <= %f AND COLUMN_FERRY_TIME >= %f AND " +
+                            "COLUMN_FERRY_TIME <= %f " +
+                            "ORDER BY COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME ASC " +
+                            "LIMIT 1 OFFSET (SELECT (COUNT(COLUMN_ID) - 1) FROM %s)",
+                    DELIVERIES_TABLE, seconds * lowerBound, seconds * upperBound,
+                    ferrySeconds * lowerBound, ferrySeconds * upperBound, DELIVERIES_TABLE);
+            Log.d("queryString", queryString);
+        }
+        cursor = db.rawQuery(queryString, null);
+        if (cursor.moveToFirst()) {
+            result = cursor.getDouble(0);
+            Log.d("result", String.valueOf(result));
+        }
+        //Close both cursor and connection.
+        cursor.close();
+        db.close();
+        return result;
+    }
+
     public double calculateOverallEstimationPrecision(){
         double result = 1.00;
         String queryString = "SELECT AVG(COLUMN_DIFFERENCE_PERCENTAGE_OF_TOTAL_TIME) FROM " + DELIVERIES_TABLE;
