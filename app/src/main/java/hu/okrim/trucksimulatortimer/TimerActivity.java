@@ -145,8 +145,6 @@ public class TimerActivity extends AppCompatActivity {
                 else{
                     buttonSubtractFerryTime.setEnabled(true);
                     remainingSeconds = calculateDriveTimeInSeconds();
-                    int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
-                    remainingSeconds = subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(remainingSeconds,ferryDistance);
                     setEstimatedTimeText(remainingSeconds);
                     setETAText();
                 }
