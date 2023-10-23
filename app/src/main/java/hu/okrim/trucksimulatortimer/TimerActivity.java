@@ -22,6 +22,10 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class TimerActivity extends AppCompatActivity {
+    private static final String DEFAULT_ESTIMATION_OPERAND = "Average";
+    private static final float DEFAULT_TACTIC_MULTIPLIER = 0.3f;
+    private static final float DEFAULT_EXPECTED_ERROR_PERCENTAGE = 0.1f;
+    private final double DEFAULT_GAME_MINUTE_IN_REAL_SECONDS = 3;
     TimerButtonState timerButtonState = TimerButtonState.STOPPED;
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -29,7 +33,7 @@ public class TimerActivity extends AppCompatActivity {
     String estimatedTimeTextBackup = null;
     final double FERRY_ONE_KM_IN_GAME_MINUTES_SHORT_DISTANCE = 1.71;
     final double FERRY_ONE_KM_IN_GAME_MINUTES_LONG_DISTANCE = 1.248;
-    final int GAME_MINUTE_IN_REAL_SECONDS = 3;
+    double gameMinuteInRealSeconds;
     int remainingSeconds, passedSeconds, ferrySeconds, totalEstimatedSeconds, timeAddedCounter = 0;
     int defaultTimerTextColor;
     Button buttonStartTimer, buttonStopTimer, buttonReset, buttonAddOneMinute, buttonAddFerryTime,
@@ -37,6 +41,7 @@ public class TimerActivity extends AppCompatActivity {
     CardView cardViewTime, cardViewFerry;
     DatabaseController databaseController = new DatabaseController(TimerActivity.this);
     EditText editTextTotalHours, editTextTotalMinutes, editTextTotalFerryDistance;
+    SharedPreferences sharedPreferences;
     TextView textViewTimer, textViewEstimatedTimeValue, textViewETAValue;
     Thread timer;
     @SuppressLint("SimpleDateFormat")
@@ -62,6 +67,7 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     private void initComponents() {
+        sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         buttonStartTimer = findViewById(R.id.buttonStartTimer);
         buttonStopTimer = findViewById(R.id.buttonStopTimer);
         buttonReset = findViewById(R.id.buttonReset);
@@ -78,8 +84,13 @@ public class TimerActivity extends AppCompatActivity {
         textViewTimer = findViewById(R.id.textViewTimer);
         textViewEstimatedTimeValue = findViewById(R.id.textViewEstimatedTimeValue);
         textViewETAValue = findViewById(R.id.textViewETAValue);
-        setListeners();
         defaultTimerTextColor = textViewTimer.getCurrentTextColor();
+        setListeners();
+        loadTimeCompressionFromSharedPreferences();
+    }
+
+    private void loadTimeCompressionFromSharedPreferences() {
+        gameMinuteInRealSeconds = sharedPreferences.getFloat("timeCompressionOneGameMinuteInSeconds", (float) DEFAULT_GAME_MINUTE_IN_REAL_SECONDS);
     }
 
     private void setListeners(){
@@ -209,7 +220,7 @@ public class TimerActivity extends AppCompatActivity {
             distanceInGameMinutes = ferryKilometres * FERRY_ONE_KM_IN_GAME_MINUTES_LONG_DISTANCE;
         }
         // 1 in-game minute = 3 seconds IRL
-        int distanceInRealSeconds = (int)(distanceInGameMinutes * GAME_MINUTE_IN_REAL_SECONDS);
+        int distanceInRealSeconds = (int)(distanceInGameMinutes * gameMinuteInRealSeconds);
         ferrySeconds = distanceInRealSeconds;
         if(subtractFrom - distanceInRealSeconds > 0){
             subtractFrom -= distanceInRealSeconds;
@@ -220,9 +231,9 @@ public class TimerActivity extends AppCompatActivity {
         return subtractFrom;
     }
     private void subTractFerryTimeFromRemainingSecondsCalculatedFromFerryTime(int ferryMinutes){
-        if(remainingSeconds - ferryMinutes * GAME_MINUTE_IN_REAL_SECONDS > 0){
-            remainingSeconds -= ferryMinutes * GAME_MINUTE_IN_REAL_SECONDS;
-            ferrySeconds += ferryMinutes * GAME_MINUTE_IN_REAL_SECONDS;
+        if(remainingSeconds - ferryMinutes * gameMinuteInRealSeconds > 0){
+            remainingSeconds -= ferryMinutes * gameMinuteInRealSeconds;
+            ferrySeconds += ferryMinutes * gameMinuteInRealSeconds;
         }
         else{
             ToastController.showToastMessage(R.string.toast_negativ_value, getApplicationContext());
@@ -249,7 +260,7 @@ public class TimerActivity extends AppCompatActivity {
         // We first convert the in-game time into a sum of seconds
         // Then we multiply by 3 because 1 in game minute is 3 seconds IRL
         // And our method needs to return seconds
-        realDriveTimeSeconds = inputTotalInMinutes * GAME_MINUTE_IN_REAL_SECONDS;
+        realDriveTimeSeconds = (int)Math.ceil((inputTotalInMinutes * gameMinuteInRealSeconds));
         // Then, if ferry distance was given we subtract the ferry time from the seconds remaining
         if(!editTextTotalFerryDistance.getText().toString().equals("0") &&
                 editTextTotalFerryDistance.getText() != null){
@@ -269,18 +280,16 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     double loadExpectedErrorPercentageFromSharedPreferences(){
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-        return sharedPreferences.getFloat("expectedErrorPercent", 0.1f);
+
+        return sharedPreferences.getFloat("expectedErrorPercent", DEFAULT_EXPECTED_ERROR_PERCENTAGE);
     }
 
     double loadTacticMultiplierFromSharedPreferences(){
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-        return sharedPreferences.getFloat("estimationTacticValue", 0.3f);
+        return sharedPreferences.getFloat("estimationTacticValue", DEFAULT_TACTIC_MULTIPLIER);
     }
 
     String loadEstimationOperandFromSharedPreferences(){
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-        String estimationOperand = sharedPreferences.getString("estimationOperand", "Average");
+        String estimationOperand = sharedPreferences.getString("estimationOperand", DEFAULT_ESTIMATION_OPERAND);
         return estimationOperand;
     }
 
@@ -448,7 +457,7 @@ public class TimerActivity extends AppCompatActivity {
             String textHour = editTextHour.getText().length() != 0 ? editTextHour.getText().toString() : "0";
             String textMinute = editTextMinute.getText().length() != 0 ? editTextMinute.getText().toString() : "0";
             int pickupInMinutes = Integer.parseInt(textHour) * 60 + Integer.parseInt(textMinute);
-            remainingSeconds += pickupInMinutes * GAME_MINUTE_IN_REAL_SECONDS;
+            remainingSeconds += pickupInMinutes * gameMinuteInRealSeconds;
             startTimer(remainingSeconds);
         });
         dialogBuilder.setNegativeButton("NONE", (dialog, which) -> {
