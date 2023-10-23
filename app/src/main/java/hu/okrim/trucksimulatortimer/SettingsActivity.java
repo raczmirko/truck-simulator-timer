@@ -4,31 +4,43 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.text.DecimalFormat;
 
 public class SettingsActivity extends AppCompatActivity {
     RadioButton radioButtonOptimistic, radioButtonRealistic, radioButtonPessimistic,
             radioButtonPlusMinus10, radioButtonPlusMinus20, radioButtonPlusMinus30,
             radioButtonExpectedError5, radioButtonExpectedError10, radioButtonExpectedError20,
             radioButtonExpectedError30, radioButtonMedian, radioButtonAverage;
-    Button buttonHelpEstimation, buttonHelpSampling, buttonHelpExpectedError, buttonWipeDB, buttonEstimationOperand;
+    Button buttonHelpEstimation, buttonHelpSampling, buttonHelpExpectedError, buttonWipeDB, buttonEstimationOperand,
+            buttonHelpTimeCompression, buttonSaveTimeCompression, buttonResetTimeCompression;
+    EditText editTextTimeCompression;
+    TextView timeCompressionRatio, currentTimeCompressionRatio;
     DatabaseController databaseController = new DatabaseController(SettingsActivity.this);
+    DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         initComoponents();
         addListeners();
         loadTacticFromSharedPreferences();
+        loadCurrentTimeCompressionRatio();
     }
 
     private void loadTacticFromSharedPreferences() {
@@ -84,7 +96,6 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void addListeners() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         radioButtonOptimistic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -204,11 +215,68 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
+        editTextTimeCompression.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //Empty, we only need the afterTextChanged method
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //Empty, we only need the afterTextChanged method
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.length() != 0){
+                    try {
+                        double value = Double.parseDouble(editable.toString());
+                        double ratio = 60 / value;
+                        timeCompressionRatio.setText(decimalFormat.format(ratio));
+                    } catch (NumberFormatException NFE){
+                        ToastController.showToastMessage(R.string.number_format_error, getApplicationContext());
+                    }
+                }
+                else{
+                    timeCompressionRatio.setText(R.string.placeholder);
+                }
+
+            }
+        });
+        buttonResetTimeCompression.setOnClickListener(view -> {
+            timeCompressionRatio.setText(null);
+            editor.putFloat("timeCompressionOneGameMinuteInSeconds", 3);
+            editor.apply();
+            loadCurrentTimeCompressionRatio();
+            editTextTimeCompression.setText(null);
+            ToastController.showToastMessage(R.string.reset_successful, getApplicationContext());
+        });
+        buttonSaveTimeCompression.setOnClickListener(view -> {
+            if(editTextTimeCompression.getText().length() != 0){
+                timeCompressionRatio.setText(null);
+                editor.putFloat("timeCompressionOneGameMinuteInSeconds", Float.parseFloat(editTextTimeCompression.getText().toString()));
+                editor.apply();
+                loadCurrentTimeCompressionRatio();
+                editTextTimeCompression.setText(null);
+                ToastController.showToastMessage(R.string.save_successful, getApplicationContext());
+            }
+            else{
+                ToastController.showToastMessage(R.string.empty_input_error, getApplicationContext());
+            }
+
+        });
         buttonHelpSampling.setOnClickListener(view -> showHelpDialog(R.string.help_sampling));
         buttonHelpEstimation.setOnClickListener(view -> showHelpDialog(R.string.help_estimation));
         buttonHelpExpectedError.setOnClickListener(view -> showHelpDialog(R.string.help_estimation));
         buttonWipeDB.setOnClickListener(view -> showConfirmationDialog(R.string.help_expected_error));
         buttonEstimationOperand.setOnClickListener(view -> showHelpDialog(R.string.help_estimation_operand));
+        buttonHelpTimeCompression.setOnClickListener(view -> showHelpDialog(R.string.help_time_compression));
+    }
+
+    private void loadCurrentTimeCompressionRatio() {
+        double value = sharedPreferences.getFloat("timeCompressionOneGameMinuteInSeconds", 3);
+        double ratio = 60 / value;
+        currentTimeCompressionRatio.setText(decimalFormat.format(ratio));
     }
 
     private void initComoponents() {
@@ -229,6 +297,12 @@ public class SettingsActivity extends AppCompatActivity {
         buttonHelpExpectedError = findViewById(R.id.buttonSettingsHelpExpectedError);
         buttonWipeDB = findViewById(R.id.buttonWipeDB);
         buttonEstimationOperand = findViewById(R.id.buttonSettingsHelpEstimationOperand);
+        buttonHelpTimeCompression = findViewById(R.id.buttonSettingsHelpTimeComrpession);
+        buttonSaveTimeCompression = findViewById(R.id.buttonSettingsSaveTimeComrpession);
+        buttonResetTimeCompression = findViewById(R.id.buttonSettingsResetTimeComrpession);
+        editTextTimeCompression = findViewById(R.id.editTextTimeCompressionSeconds);
+        timeCompressionRatio = findViewById(R.id.textViewTimeCompressionRatio);
+        currentTimeCompressionRatio = findViewById(R.id.textViewCurrentTimeCompressionRatio);
     }
 
     public void showHelpDialog(int textReference){

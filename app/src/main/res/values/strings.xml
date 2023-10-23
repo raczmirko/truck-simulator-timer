@@ -82,4 +82,16 @@
     <string name="median">Median</string>
     <string name="what_is_this">What is this?</string>
     <string name="help_statistics_precision">This number indicates the amount of error in the past drive time estimations. There are 3 categories:\n\nNegative numbers: usually arrived this % slower than estimated\n\nZero: always arrived on time\n\nPositive numbers: usually arrived this % faster than estimated</string>
+    <string name="settings_time_compression">Set time compression:</string>
+    <string name="settings_time_compression_help">Give how many seconds 1 in-game minute equals to:</string>
+    <string name="settings_time_compression_hint">Type the amount of seconds</string>
+    <string name="settings_time_compression_ratio">Time Compression Ratio = \t 1:</string>
+    <string name="settings_current_time_compression_ratio">Currently used ratio = \t 1:</string>
+    <string name="placeholder">\?</string>
+    <string name="save">Save</string>
+    <string name="number_format_error">Number Format Error: Please correct the entered value!</string>
+    <string name="empty_input_error">You first have to fill the input out!</string>
+    <string name="reset_successful">Reset successful!</string>
+    <string name="save_successful">Save successful!</string>
+    <string name="help_time_compression">With this setting you can change the default time compression used in the app, which is 1:20 (1 in-game minute = 3 IRL seconds), the ETS2 standard.\n\nIf you have some custom maps downloaded, they might have a different compression with different time compression. If so, you can change the ratio, to make the timer work on other compression ratios too.</string>
 </resources>
