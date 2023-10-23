@@ -126,9 +126,7 @@ public class TimerActivity extends AppCompatActivity {
             endTimer();
             buttonReset.setVisibility(View.VISIBLE);
         });
-        buttonReset.setOnClickListener(view -> {
-            resetUIWhenTimerStops();
-        });
+        buttonReset.setOnClickListener(view -> resetUIWhenTimerStops());
         buttonAddOneMinute.setOnClickListener(view -> {
             remainingSeconds += 60;
             timeAddedCounter++;
@@ -289,8 +287,7 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     String loadEstimationOperandFromSharedPreferences(){
-        String estimationOperand = sharedPreferences.getString("estimationOperand", DEFAULT_ESTIMATION_OPERAND);
-        return estimationOperand;
+        return sharedPreferences.getString("estimationOperand", DEFAULT_ESTIMATION_OPERAND);
     }
 
     private int multiplyRealDriveTimeSecondsWithAverageDifferencePercentage(int realDriveTimeSeconds) {
