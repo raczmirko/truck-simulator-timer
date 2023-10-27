@@ -129,6 +129,7 @@ public class TimerActivity extends AppCompatActivity {
         buttonReset.setOnClickListener(view -> resetUIWhenTimerStops());
         buttonAddOneMinute.setOnClickListener(view -> {
             remainingSeconds += 60;
+            totalEstimatedSeconds += 60;
             timeAddedCounter++;
             textViewEstimatedTimeValue.setText(String.format("%s (+%s m)",estimatedTimeTextBackup,timeAddedCounter));
             setETAText();
@@ -145,6 +146,7 @@ public class TimerActivity extends AppCompatActivity {
                 else{
                     buttonSubtractFerryTime.setEnabled(true);
                     remainingSeconds = calculateDriveTimeInSeconds();
+                    totalEstimatedSeconds = remainingSeconds;
                     setEstimatedTimeText(remainingSeconds);
                     setETAText();
                 }
@@ -153,6 +155,7 @@ public class TimerActivity extends AppCompatActivity {
         buttonSubtractFerryTime.setOnClickListener(view -> {
             int ferryDistance = Integer.parseInt(editTextTotalFerryDistance.getText().toString());
             remainingSeconds = subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(remainingSeconds,ferryDistance);
+            totalEstimatedSeconds = subtractFerryTimeFromRemainingSecondsCalculatedFromKilometres(totalEstimatedSeconds,ferryDistance);
             setEstimatedTimeText(remainingSeconds);
             setETAText();
         });
