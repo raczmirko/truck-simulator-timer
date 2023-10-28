@@ -108,6 +108,7 @@ public class TimerActivity extends AppCompatActivity {
                         //Changing button to pause button
                         buttonStartTimer.setText(R.string.pause);
                         remainingSeconds = calculateDriveTimeInSeconds();
+                        totalEstimatedSeconds = remainingSeconds;
                         showDistanceToStartingCompanyDialog();
                     }
                 }
@@ -241,7 +242,6 @@ public class TimerActivity extends AppCompatActivity {
 
     private void startTimer(int seconds) {
         if(!timerIsRunning){
-            totalEstimatedSeconds = seconds;
             buttonCalculate.setEnabled(false);
             buttonSubtractFerryTime.setEnabled(false);
             startTimerThread(seconds);
