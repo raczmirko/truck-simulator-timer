@@ -52,7 +52,7 @@
                 android:layout_weight="1"
                 android:autofillHints="distance"
                 android:ems="10"
-                android:hint="@string/ferry_minute"
+                android:hint="@string/load_pickup_minute"
                 android:inputType="number"
                 android:minHeight="48dp"
                 android:textAlignment="center"
