@@ -82,11 +82,11 @@ public class DatabaseController extends SQLiteOpenHelper {
     public List<DataFetchModel> getAllRecords(){
         List<DataFetchModel> returnList= new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
-        String selectStatement = "SELECT * FROM " + DELIVERIES_TABLE;
+        String selectStatement = "SELECT * FROM " + DELIVERIES_TABLE + " ORDER BY COLUMN_DATE DESC";
         Cursor cursor = db.rawQuery(selectStatement, null);
 
         if(cursor.moveToFirst()){
-            //loop through cursor (result set) and create new customer objects, put them in returnList
+            //loop through cursor (result set) and create new objects, put them in returnList
             do{
                 DataFetchModel dataFetchModel = new DataFetchModel(
                         cursor.getInt(0),
